@@ -12,7 +12,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 	
 	<style>
-		#home {margin: 0 25px;}
+		.content-frame {
+			padding: 0 25px;
+		}
+		#img-result {
+			width: 100%;
+		}
 	</style>
 	
 	<link rel="stylesheet" href="css/ratchet.css" />
@@ -47,7 +52,7 @@
 	</script>
 </head>
 
-<body >
+<body>
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Chow Cam</h1>
@@ -78,7 +83,6 @@
 	</nav>
 	
 	<div id="home" class="content">
-	
 	<!-Slider->
 	<!--
 	<div class="slider">
@@ -98,14 +102,15 @@
 	-->
 	
 	<br><br>
-	
-	<form>
-		<input type="search" id="search" placeholder="What's on the menu?"/><br>
-		<a class="button button-block" id="submit">Search</a>
- 	</form>
- 	
-	<image id="img-result"/>
-	
+	<div class="content-frame">
+		<form class="padded">
+			<input type="search" id="search" placeholder="What's on the menu?"/><br>
+			<a class="button button-block" id="submit">Search</a>
+	 	</form>
+	 	<br>
+		<image id="img-result"/>
+		<br><br>
+	</div>
 	</div>
 </body>
 
