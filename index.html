@@ -37,9 +37,10 @@
 				});
 			});
 
-			$("body").keydown(function(event){
+			$("body").keypress(function(event){
 				if(event.which == 13){
-					$("#submit").trigger("click");
+					$("#submit").click();
+					return false;
 				}
 			});
 		}); //End of Document Ready
