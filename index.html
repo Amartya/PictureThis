@@ -26,6 +26,12 @@
 	<script src="js/rachet.js"></script>
 	
 	<script type="text/javascript">
+		
+		//Global Variables
+		//Parse Constants
+		var MenuItems;
+	
+	
 		$(document).ready(function(){
 			$("#submit").click(function(){
 				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=000885540180571232204:h1d3kgv-5am&searchType=image&q=";
@@ -50,25 +56,18 @@
 				}
 			});
 		}); //End of Document Ready
-	</script>
+		
+		
 	
-	
-	<script type="text/javascript">
-		//Global Variables
-		//Parse Constants
-		var MenuItems;
-	
-		function initialize() {
-				//Initialize Parse
-				Parse.initialize("w2QBbAohqDJLi4kE7tMP5oaca09vw63UgCo8OfMv", "EOfmgHdudoXYhuRtdjN7dpEPMg7CqE03YTzBcZRx");
-
-				MenuItems = Parse.Object.extend("MenuItems");
+		function grabDescription() {
+				
+				
 			}  
 	</script>
 	
 </head>
 
-<body onload="initialize()"> 
+<body> 
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Picture This</h1>
