@@ -27,10 +27,25 @@
 	
 	<script type="text/javascript">
 		
+		
 		//Global Variables
 		//Parse Constants
 		var MenuItems;
 	
+		function grabDescription() {
+			Parse.initialize("w2QBbAohqDJLi4kE7tMP5oaca09vw63UgCo8OfMv", "EOfmgHdudoXYhuRtdjN7dpEPMg7CqE03YTzBcZRx");
+			MenuItems = Parse.Object.extend("MenuItems");
+			var query = new Parse.Query(MenuItems);
+			query.equalTo("Name", "sushi");
+			query.find({
+				success: function(results) {
+					alert("Successfully found the sushi object");
+					},
+				error: function(error) {
+					alert("you fucked up");
+					}
+					});
+		}
 	
 		$(document).ready(function(){
 			$("#submit").click(function(){
@@ -57,14 +72,6 @@
 			});
 		}); //End of Document Ready
 		
-		
-	
-		function grabDescription() {
-				//Initialize Parse
-				Parse.initialize("w2QBbAohqDJLi4kE7tMP5oaca09vw63UgCo8OfMv", "EOfmgHdudoXYhuRtdjN7dpEPMg7CqE03YTzBcZRx");
-				MenuItems = Parse.Object.extend("MenuItems");
-				
-			}  
 	</script>
 	
 </head>
@@ -122,7 +129,7 @@
 	<div class="content-frame">
 		<form class="padded">
 			<input type="search" id="search" placeholder="What's on the menu?"/><br>
-			<a class="button button-block" id="submit">Search</a>
+			<a class="button button-block" id="submit" onclick="grabDescription()">Search</a>
 	 	</form>
 	 	<br>
 		<image id="img-result"/>
