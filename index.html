@@ -22,6 +22,7 @@
 	
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
 	<script src="js/rachet.js"></script>
 	
 	<script type="text/javascript">
@@ -50,9 +51,24 @@
 			});
 		}); //End of Document Ready
 	</script>
+	
+	
+	<script type="text/javascript">
+		//Global Variables
+		//Parse Constants
+		var MenuItems;
+	
+		function initialize() {
+				//Initialize Parse
+				Parse.initialize("w2QBbAohqDJLi4kE7tMP5oaca09vw63UgCo8OfMv", "EOfmgHdudoXYhuRtdjN7dpEPMg7CqE03YTzBcZRx");
+
+				MenuItems = Parse.Object.extend("MenuItems");
+			}  
+	</script>
+	
 </head>
 
-<body>
+<body onload="initialize()"> 
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Picture This</h1>
@@ -112,6 +128,7 @@
 		<br><br>
 	</div>
 	</div>
+	
 </body>
 
 </html>
