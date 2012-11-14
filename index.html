@@ -26,43 +26,35 @@
 	<script src="js/rachet.js"></script>
 	
 	<script type="text/javascript">
-		
-		
 		//Global Variables
 		//Parse Constants
 		var MenuItems;
-	
-		function grabDescription() {
-			Parse.initialize("w2QBbAohqDJLi4kE7tMP5oaca09vw63UgCo8OfMv", "EOfmgHdudoXYhuRtdjN7dpEPMg7CqE03YTzBcZRx");
-			MenuItems = Parse.Object.extend("MenuItems");
-			var query = new Parse.Query(MenuItems);
-			query.equalTo("Name", "sushi");
-			query.find({
-				success: function(results) {
-					alert("Successfully found the sushi object");
-					},
-				error: function(error) {
-					alert("you fucked up");
-					}
-					});
-		}
+
+		//Description for menu item
+		var description = "";
+		var ingredient = "";
+		var category = "";
+		var country = "";
 	
 		$(document).ready(function(){
 			$("#submit").click(function(){
-				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=000885540180571232204:h1d3kgv-5am&searchType=image&q=";
+				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
 				url+=document.getElementById("search").value;
+
+			//Sending search string to Parse
+			var currentSearchString = document.getElementById("search").value;
+			grabDescription(currentSearchString);
+
 			$.ajax({
 					type:"GET",
 					url:url,
 					dataType: "json",
 					success:function(data){
 						document.getElementById("img-result").src = data.items[0].link;
-						//document.getElementById("img2").src = data.items[1].link;
-						//document.getElementById("img3").src = data.items[2].link;
-						//document.getElementById("content").value = data;
 					}
 				});
 			});
+
 
 			$("body").keypress(function(event){
 				if(event.which == 13){
@@ -71,12 +63,56 @@
 				}
 			});
 		}); //End of Document Ready
+
+		function grabDescription(searchstr) {
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+			var query = new Parse.Query(MenuItems);
+
+			query.equalTo("Name", searchstr.toLowerCase());
+			query.find({
+				success: function(results) {
+						for (var resultCount=0;resultCount<results.length;resultCount++){
+							parseDescription(results[resultCount].get("Description"));
+						}
+					},
+				error: function(error) {
+					alert("Failed to get data from Parse");
+				}
+			});
+		}
 		
+		function parseDescription(wholeDesc){
+			var index_desc = wholeDesc.indexOf("#description#", 0);
+			description = wholeDesc.substring(0, index_desc);//fetches description
+
+			var index_ingrd = wholeDesc.indexOf("#ingredient#", index_desc);
+			ingredient = wholeDesc.substring(index_desc + 13, index_ingrd);//fetches ingredient
+			
+			var index_cat = wholeDesc.indexOf("#category#", index_ingrd);
+			category = wholeDesc.substring(index_ingrd + 12, index_cat);//fetches category
+
+			var index_country = wholeDesc.indexOf("#country#", index_cat);
+			country = wholeDesc.substring(index_cat + 10, index_country);//fetches country
+
+
+			document.getElementById("description").innerHTML = "<b>Description: </b>" + description;
+			document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + ingredient;
+			document.getElementById("category").innerHTML = "<b>Category: </b>" + category;
+			document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + country;
+
+		}
+
+		function loadParseData(){
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+		}
+
 	</script>
 	
 </head>
 
-<body> 
+<body onload="loadParseData()"> 
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Picture This</h1>
@@ -129,13 +165,20 @@
 	<div class="content-frame">
 		<form class="padded">
 			<input type="search" id="search" placeholder="What's on the menu?"/><br>
-			<a class="button button-block" id="submit" onclick="grabDescription()">Search</a>
+			<a class="button button-block" id="submit" >Search</a>
 	 	</form>
 	 	<br>
 		<image id="img-result"/>
 		<br><br>
+
+		<ul class="list inset" id="detail">
+			<li id="description"><b>Description: </b>N/A</li>
+			<li id="ingredient"><b>Main Ingredients(s): </b>N/A</li>
+			<li id="category"><b>Category: </b>N/A</li>
+			<li id="country"><b>Country of Origin: </b>N/A</li>
+		</ul>
 	</div>
-	</div>
+
 	
 </body>
 
