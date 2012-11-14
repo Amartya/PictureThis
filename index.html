@@ -38,9 +38,8 @@
 	
 		$(document).ready(function(){
 			$("#submit").click(function(){
-				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
 				url+=document.getElementById("search").value;
-
 			//Sending search string to Parse
 			var currentSearchString = document.getElementById("search").value;
 			grabDescription(currentSearchString);
@@ -50,7 +49,12 @@
 					url:url,
 					dataType: "json",
 					success:function(data){
+					alert(url);
+					alert(data.items);
 						document.getElementById("img-result").src = data.items[0].link;
+					},
+					error:function(data){
+					alert("cannot search");
 					}
 				});
 			});
