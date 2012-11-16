@@ -29,8 +29,12 @@
             // Called when a photo is successfully retrieved
             //
             function onPhotoURISuccess(imageURI) {
-               
+                
+                
                 callNativePlugin({url_imagen: imageURI});
+                
+                //show loading screen
+                //navigator.notification.loadingStart();
             }
             
             // A button will call this function
@@ -60,7 +64,9 @@
             } 
             
             function nativePluginResultHandler (result) { 
-                //alert("ok: "+result);
+                //stop loading screen
+                //navigator.notification.loadingStop();
+
                 var ocr_res = document.getElementById("ocr");
                 ocr_res.innerHTML = result;
             } 
@@ -68,6 +74,45 @@
             function nativePluginErrorHandler (error) { 
                 alert("error: "+error);
             }
+        </script>
+
+        <script type="text/javascript">     
+
+            function loadHTML(node, url, timeout) {
+                if (timeout == undefined)
+                    timeout = 10000;
+
+                var req = new XMLHttpRequest();
+                var timer = setTimeout(function() {
+                    try {
+                        req.abort();
+                    } catch(e) {}
+                    navigator.notification.loadingStop();
+                }, );
+
+                req.onreadystatechange = function() {
+                    if (req.readyState == 4) {
+                        if (req.status < 300) {
+                            clearTimeout(timer);
+
+                            var html = req.responseText;
+                            html.replace(/.*<body>/, '');
+                            html.replace(/<\/body>.*/, '');
+
+                            node.innerHTML = html;
+                        }
+                        navigator.notification.loadingStop();
+                        delete req;
+                        delete node;
+                    }
+                };
+                req.open('GET', url, true);
+                req.send();
+            }
+            function getData(){
+                loadHTML(document.getElementById("content"), 'www.google.com', 3000);
+            }
+
         </script>
     </head>
 
@@ -101,8 +146,13 @@
           </ul>
         </nav>
         <div id="home" class="content">
-            <button onclick="capturePhoto();">Take Photo</button>
+            <button onclick="capturePhotoEdit();">Take Photo</button>
             <p id='ocr'></p>
+
+            <br><br>
+            <button onclick="getData();">Take Photo</button>
+            <div id="content">
+            </div>
         </div>
     </body>
 </html>

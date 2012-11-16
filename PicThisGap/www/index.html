@@ -1,106 +1,198 @@
-<!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<meta charset="utf-8">
+	<title>Picture This</title>
+	
+	<!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	
+	<style>
+		.content-frame {
+			padding: 0 5%;
+		}
+		#img-result {
+			width: 100%;
+		}
+	</style>
+	
+	<link rel="stylesheet" href="css/ratchet.css" />
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
+	<script src="js/rachet.js"></script>
+	
+	<script type="text/javascript">
+		//Global Variables
+		//Parse Constants
+		var MenuItems;
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-        <script src="OCRPlugin.js" type="text/javascript"></script>
-        <script type="text/javascript">
-                $(window.document).bind("mobileinit", function() {
-                    $.support.cors=true;
-                    $.mobile.allowCrossDomainPages = true;
-              });
-        </script>
-        <style>
-            .content-frame {
-                padding: 0 25px;
-            }
-            #img-result {
-                width: 100%;
-            }
-        </style>                
-        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
-        <title>PictureThis</title>
-    </head>
-    <body>
-        <div class="app">
-            <!-Title Bar->
-            <header class="bar-title">
-                <h1 class="title">Picture This</h1>
-            </header>
-            
-            <!-Footer Bar->
-            <nav class="bar-tab">
-              <ul class="tab-inner">
-                <li class="tab-item">
-                  <a href="camera.html">
-                    <img class="tab-icon" src="img/camera.png">
-                    <div class="tab-label">Camera</div>
-                  </a>
-                </li>
-                <li class="tab-item active">
-                  <a href="index.html">
-                    <img class="tab-icon" src="img/search.png">
-                    <div class="tab-label">Search</div>
-                  </a>
-                </li>
-                <li class="tab-item">
-                  <a href="">
-                    <img class="tab-icon" src="img/settings.png">
-                    <div class="tab-label">Settings</div>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            
-            <div id="home" class="content">
-                <br><br>
-                <div class="content-frame">
-                    <form class="padded">
-                        <input type="ratchetsearch" id="ratchetsearch" placeholder="What's on the menu?"/><br>
-                        <a class="button button-block" id="submit">Search</a>
-                    </form>
-                    <br>
-                    <image id="img-result"/>
-                </div>
-            </div>
+		//Description for menu item
+		var description = "";
+		var ingredient = "";
+		var category = "";
+		var country = "";
+	
+		$(document).ready(function(){
+			$("#submit").click(function(){
+				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+				url+=document.getElementById("search").value;
 
-        </div>
-        <script type="text/javascript" src="cordova-2.2.0.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <link rel="stylesheet" href="css/ratchet.css" />
-        <script src="js/rachet.js"></script>
-        <script src="js/push.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-            $("#submit").click(function(){ 
-                var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyD4n-UbNlT2P-xUAjv4Nbv2mMK7ikG4yUM&cx=000885540180571232204:h1d3kgv-5am&searchType=image&";
-                var ques =  document.getElementById("ratchetsearch").value;
-                $.getJSON(url,{q: ques},function(data) {
-                     document.getElementById("img-result").src = data.items[0].link;
-                });
-                
-            });
-        </script>
-    </body>
+			//Sending search string to Parse
+			var currentSearchString = document.getElementById("search").value;
+			grabDescription(currentSearchString);
+
+			$.ajax({
+					type:"GET",
+					url:url,
+					dataType: "json",
+					success:function(data){
+						document.getElementById("img-result").src = data.items[0].link;
+					}
+				});
+			});
+
+
+			$("body").keypress(function(event){
+				if(event.which == 13){
+					$("#submit").click();
+					return false;
+				}
+			});
+		}); //End of Document Ready
+
+		function grabDescription(searchstr) {
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+			var query = new Parse.Query(MenuItems);
+
+			query.equalTo("Name", searchstr.toLowerCase());
+			query.find({
+				success: function(results) {
+						for (var resultCount=0;resultCount<results.length;resultCount++){
+							parseDescription(results[resultCount].get("Description"));
+						}
+						if(results.length==0){
+							//Reset fields if item not found in Parse
+							resetDescription();
+						}
+					},
+				error: function(error) {
+					alert("Failed to get data from Parse");
+					//Reset fields if there was an error in communicating with Parse
+					resetDescription();
+				}
+			});
+		}
+		
+		function resetDescription(){
+			document.getElementById("description").innerHTML = "<b>Description: </b>" + "N/A";
+			document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + "N/A";
+			document.getElementById("category").innerHTML = "<b>Category: </b>" + "N/A";
+			document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + "N/A";
+		}
+
+		function parseDescription(wholeDesc){
+			var index_desc = wholeDesc.indexOf("#description#", 0);
+			description = wholeDesc.substring(0, index_desc);//fetches description
+
+			var index_ingrd = wholeDesc.indexOf("#ingredient#", index_desc);
+			ingredient = wholeDesc.substring(index_desc + 13, index_ingrd);//fetches ingredient
+			
+			var index_cat = wholeDesc.indexOf("#category#", index_ingrd);
+			category = wholeDesc.substring(index_ingrd + 12, index_cat);//fetches category
+
+			var index_country = wholeDesc.indexOf("#country#", index_cat);
+			country = wholeDesc.substring(index_cat + 10, index_country);//fetches country
+
+
+			document.getElementById("description").innerHTML = "<b>Description: </b>" + description;
+			document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + ingredient;
+			document.getElementById("category").innerHTML = "<b>Category: </b>" + category;
+			document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + country;
+
+		}
+		
+		function loadParseData(){
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+		}
+
+	</script>
+	
+</head>
+
+<body onload="loadParseData()"> 
+	<!-Title Bar->
+	<header class="bar-title">
+		<h1 class="title">Picture This</h1>
+  	</header>
+  	
+  	<!-Footer Bar->
+  	<nav class="bar-tab">
+	  <ul class="tab-inner">
+	    <li class="tab-item">
+	      <a href="camera.html">
+	        <img class="tab-icon" src="img/camera.png">
+	        <div class="tab-label">Camera</div>
+	      </a>
+	    </li>
+	    <li class="tab-item active">
+	      <a href="">
+	        <img class="tab-icon" src="img/search.png">
+	        <div class="tab-label">Search</div>
+	      </a>
+	    </li>
+	    <li class="tab-item">
+	      <a href="">
+	        <img class="tab-icon" src="img/settings.png">
+	        <div class="tab-label">Settings</div>
+	      </a>
+	    </li>
+	  </ul>
+	</nav>
+	
+	<div id="home" class="content">
+	<!-Slider->
+	<!--
+	<div class="slider">
+	  <ul>
+	    <li>
+	      <img src="img/slide-1.jpg">
+	      <span class="slide-text">← Slide me</span>
+	    </li>
+	    <li>
+	      <img src="img/slide-2.jpg">
+	    </li>
+	    <li>
+	      <img src="img/slide-3.jpg">
+	    </li>
+	  </ul>
+	</div>
+	-->
+	
+	<br><br>
+	<div class="content-frame">
+		<form class="padded">
+			<input type="search" id="search" placeholder="What's on the menu?"></input><br>
+			<a class="button button-block" id="submit" >Search</a>
+	 	</form>
+	 	<br>
+		<image id="img-result"/>
+		<br><br>
+
+		<ul class="list inset" id="detail">
+			<li id="description"><b>Description: </b>N/A</li>
+			<li id="ingredient"><b>Main Ingredients(s): </b>N/A</li>
+			<li id="category"><b>Category: </b>N/A</li>
+			<li id="country"><b>Country of Origin: </b>N/A</li>
+		</ul>
+	</div>
+
+	
+</body>
+
 </html>
