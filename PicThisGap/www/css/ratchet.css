@@ -486,7 +486,7 @@ a {
 -------------------------------------------------- */
 
 /* Position/size search bar within the bar */
-.bar-standard input[type=ratchetsearch] {
+.bar-standard input[type=search] {
   height: 32px;
   margin: 0;
 }/* Lists
@@ -619,7 +619,7 @@ select {
 select,
 textarea,
 input[type="text"],
-input[type=ratchetsearch],
+input[type=search],
 input[type="password"],
 input[type="datetime"],
 input[type="datetime-local"],
@@ -646,10 +646,10 @@ input[type="color"],
 }
 
 /* Fully round search input */
-input[type=ratchetsearch] {
+input[type=search] {
   height: 34px;
   font-size: 14px;
-  border-radius: 10px;
+  border-radius: 30px;
 }
 
 /* Allow text area's height to grow larger than a normal input */
@@ -761,8 +761,7 @@ select {
 /* Overriding styles for buttons with modifiers  */
 .button-main,
 .button-positive,
-.button-negative,
-.button-special {
+.button-negative {
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, .3);
 }
@@ -789,26 +788,6 @@ select {
   background-image: -webkit-linear-gradient(top, #e71e1e 0,#c71a1a 100%);
   background-image: linear-gradient(to bottom, #e71e1e 0, #c71a1a 100%);
   border: 1px solid #b51a1a;
-}
-
-.button-special {
-  display: inline-block;
-  padding: 18px 40px;
-  color: #fff;
-  font-size: 24px;
-  font-weight: 700;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
-  text-decoration: none;
-  line-height: 1;
-  background-color: #f26629; /* Old browsers */
-  background-image: -moz-linear-gradient(top,  #f95e0c 0%, #e53003 100%); /* FF3.6+ */
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f95e0c), color-stop(100%,#e53003)); /* Chrome,Safari4+ */
-  background-image: -webkit-linear-gradient(top,  #f95e0c 0%,#e53003 100%); /* Chrome10+,Safari5.1+ */
-  background-image: -o-linear-gradient(top,  #f95e0c 0%,#e53003 100%); /* Opera 11.10+ */
-  background-image: -ms-linear-gradient(top,  #f95e0c 0%,#e53003 100%); /* IE10+ */
-  background-image: linear-gradient(to bottom,  #f95e0c 0%,#e53003 100%); /* W3C */
-  border-radius: 3px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 5px 5px rgba(0,0,0,.2);
 }
 
 /* Active state for buttons with modifiers */
