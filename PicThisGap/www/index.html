@@ -167,18 +167,16 @@
 		document.getElementById("btn").disabled=true;	
 		document.getElementById("btn2").disabled=true;		
 		}
-
+		
 		function changeCount2()
 		{
 			count2++;
 			document.getElementById("counter2").innerHTML = count2;
-
 			MenuItems = Parse.Object.extend("MenuItems");
 			var menuItems = new Parse.Query(MenuItems);
 			var searchResult= document.getElementById("search").value.toLowerCase();
 
 			menuItems.equalTo("Name", searchResult);
-
 			menuItems.find({
 				success: function(results) {
 						for (var resultCount=0;resultCount<results.length;resultCount++){
@@ -193,7 +191,6 @@
 		document.getElementById("btn2").disabled=true;
 		document.getElementById("btn").disabled=true;		
 		}
-
 	</script>
 
 </head>

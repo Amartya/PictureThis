@@ -1,0 +1,141 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" href="css/ratchet.css" />
+        <script src="js/rachet.js"></script>
+        <script src="js/push.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
+
+        <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            var file;
+            
+            function useExistingPhoto()
+            {
+                capture(Camera.PictureSourceType.SAVEDPHOTOALBUM);
+            }
+            
+            function capture(sourceType)
+            {
+                navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
+                    destinationType: Camera.DestinationType.FILE_URI,
+                    sourceType: sourceType,
+                    correctOrientation: true
+                });
+            }
+            
+            function onCaptureSuccess(imageURI)
+            {
+                var fail, ft, options, params, win;
+                // callback for when the photo has been successfully uploaded:
+                success: function(response) {
+                  alert("Your photo has been uploaded!");
+                };
+                // callback if the photo fails to upload successfully.
+                fail: function(error) {
+                  alert("An error has occurred: Code = " + error.code);
+                };
+                options = new FileUploadOptions();
+                // parameter name of file:
+                options.fileKey = "my_image";
+                // name of the file:
+                options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+                // mime type:
+                options.mimeType = "text/plain";
+                params = {
+                  val1: "some value",
+                  val2: "some other value"
+                };
+                options.params = params;
+                ft = new FileTransfer();
+                ft.upload(imageURI, 'http://example.com/path/to/service', success, fail, options);
+            }
+
+            // there was an error capturing the photo:
+            function onCaptureFail(message)
+            {
+              alert("Failed because: " + message);
+            }
+            
+            function upload()
+            {
+                var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+
+            $.ajax({
+               type: "POST",
+               beforeSend: function(request)
+               {
+                    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+                    request.setRequestHeader("X-Parse-REST-API-Key", 'qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY');
+                    request.setRequestHeader("Content-Type", file.type);
+                },
+                url: serverUrl,
+                data: file,
+                processData: false,
+                contentType: false,
+                success: function(data)
+                {
+
+                    // save result from Parse local storage, so we can use it later
+                    localStorage.setItem('parse_file_name', data.name);
+                    localStorage.setItem('parse_url', data.url);
+                  
+                     // this is actual file name we uploaded, which is different from name Parse sends us bak
+                    localStorage.setItem('file_name', file.name);
+
+                    // OPTIONAL: add service to save file name/URL to a list
+                },
+                error: function(data) {
+                   var obj = jQuery.parseJSON(data);
+                   alert(obj.error);
+                }
+            });
+            }
+            
+            function initializeParse()
+            {
+		Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                
+	    }
+            
+        </script>
+
+    </head>
+
+    <body onload="intializeParse()">
+        <!-Title Bar->
+        <header class="bar-title">
+            <h1 class="title">Picture This</h1>
+        </header>
+
+        <!-Footer Bar-> 
+        <nav class="bar-tab">
+          <ul class="tab-inner">
+            <li class="tab-item active">
+              <a href="camera.html" data-ajax="false" data-transition="slide-in">
+                <img class="tab-icon" src="img/camera.png">
+                <div class="tab-label">Camera</div>
+              </a>
+            </li>
+            <li class="tab-item">
+              <a href="index.html"  data-ajax="false" data-transition="slide-in">
+                <img class="tab-icon" src="img/search.png">
+                <div class="tab-label">Search</div>
+              </a>
+            </li>
+            <li class="tab-item">
+              <a href="">
+                <img class="tab-icon" src="img/settings.png">
+                <div class="tab-label">Settings</div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div id="home" class="content">
+            <button onclick="capturePhotoEdit();">Upload photo</button>
+            <p id='ocr'></p>
+        </div>
+    </body>
+</html>
