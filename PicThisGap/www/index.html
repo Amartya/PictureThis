@@ -30,6 +30,7 @@
 	
 	<script type="text/javascript">
 		//Global Variables
+		var count=0;
 		//Parse Constants
 		var MenuItems;
 
@@ -78,6 +79,8 @@
 				success: function(results) {
 						for (var resultCount=0;resultCount<results.length;resultCount++){
 							parseDescription(results[resultCount].get("Description"));
+							count=results[resultCount].get("Likes");
+							document.getElementById("counter").innerHTML = count;
 							$("div#description-block").show();
 						}
 						
@@ -124,8 +127,33 @@
 		}
 
 		function loadParseData(){
+		count=0;
+		document.getElementById("counter").innerHTML = count;
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
+		}
+		function changeCount()
+		{
+			count++;
+			document.getElementById("counter").innerHTML = count;
+			
+			MenuItems = Parse.Object.extend("MenuItems");
+			var menuItems = new Parse.Query(MenuItems);
+			var searchResult= document.getElementById("search").value.toLowerCase();
+
+			menuItems.equalTo("Name", searchResult);
+			
+			menuItems.find({
+				success: function(results) {
+						for (var resultCount=0;resultCount<results.length;resultCount++){
+						results[resultCount].set("Likes", count);
+						results[resultCount].save();
+						}
+					},
+				error: function(error) {
+					alert("Failed to get data from Parse");
+				}
+			});		
 		}
 	</script>
 	
@@ -197,6 +225,7 @@
 				<li id="category"><b>Category: </b>N/A</li>
 				<li id="country"><b>Country of Origin: </b>N/A</li>
 			</ul>
+			<a class="button" onclick="changeCount()">I like it<span id="counter" class="count">N/A</span></a>
 		<div>
 	</div>
 
