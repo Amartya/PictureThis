@@ -31,6 +31,7 @@
 	<script type="text/javascript">
 		//Global Variables
 		var count=0;
+		var count2=0;
 		//Parse Constants
 		var MenuItems;
 
@@ -42,6 +43,8 @@
 	
 		$(document).ready(function(){
 			$("#submit").click(function(){
+			document.getElementById("btn").disabled=false;	
+			document.getElementById("btn2").disabled=false;	
 				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
 				url+=document.getElementById("search").value;
 				//Sending search string to Parse
@@ -80,7 +83,9 @@
 						for (var resultCount=0;resultCount<results.length;resultCount++){
 							parseDescription(results[resultCount].get("Description"));
 							count=results[resultCount].get("Likes");
+							count2=results[resultCount].get("Dislikes");
 							document.getElementById("counter").innerHTML = count;
+							document.getElementById("counter2").innerHTML = count2;
 							$("div#description-block").show();
 						}
 						
@@ -128,7 +133,9 @@
 
 		function loadParseData(){
 		count=0;
+		count2=0;
 		document.getElementById("counter").innerHTML = count;
+		document.getElementById("counter2").innerHTML = count2;
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 		}
@@ -153,8 +160,37 @@
 				error: function(error) {
 					alert("Failed to get data from Parse");
 				}
-			});		
+			});	
+		document.getElementById("btn").disabled=true;	
+		document.getElementById("btn2").disabled=true;		
 		}
+		
+		function changeCount2()
+		{
+			count2++;
+			document.getElementById("counter2").innerHTML = count2;
+			
+			MenuItems = Parse.Object.extend("MenuItems");
+			var menuItems = new Parse.Query(MenuItems);
+			var searchResult= document.getElementById("search").value.toLowerCase();
+
+			menuItems.equalTo("Name", searchResult);
+			
+			menuItems.find({
+				success: function(results) {
+						for (var resultCount=0;resultCount<results.length;resultCount++){
+						results[resultCount].set("Dislikes", count2);
+						results[resultCount].save();
+						}
+					},
+				error: function(error) {
+					alert("Failed to get data from Parse");
+				}
+			});	
+		document.getElementById("btn2").disabled=true;
+		document.getElementById("btn").disabled=true;		
+		}
+		
 	</script>
 	
 </head>
@@ -225,7 +261,8 @@
 				<li id="category"><b>Category: </b>N/A</li>
 				<li id="country"><b>Country of Origin: </b>N/A</li>
 			</ul>
-			<a class="button" onclick="changeCount()">I like it<span id="counter" class="count">N/A</span></a>
+			<button class="button-positive" onclick="changeCount()" id="btn"> Helpful <span id="counter" class="count">N/A</span></button>
+			<button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>
 		<div>
 	</div>
 
