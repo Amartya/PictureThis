@@ -43,7 +43,7 @@
 		$('#uploadbutton').click(function() {
 		
 		    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
-	
+		var imageURLreturned;
 		    $.ajax({
 		       type: "POST",
 		       beforeSend: function(request)
@@ -58,17 +58,11 @@
 			contentType: false,
 			success: function(data)
 			{
-			    alert("in success");
-			    alert("File available at " + data.url);
-			},
-			error: function(data) {
-			    alert("in error");
-			   var obj = jQuery.parseJSON(data);
-			   alert(obj.error);
-			}
-		    });
-			
-			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+				alert("in success");
+				alert("File available at " + data.url);
+				imageURLreturned = data.url;
+				
+				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 				window.MenuItems = Parse.Object.extend("MenuItems");
 				menuItems=new MenuItems();
 				
@@ -82,14 +76,23 @@
 				menuItems.set("Name",name);
 				menuItems.set("Likes",0);
 				menuItems.set("Dislikes",0);
+				menuItems.set("Image",imageURLreturned);
 				menuItems.save(null,{
-						success: function(menuItems){
-							alert("Data saved successfully"); //should change these to jquery alerts.
-						},
-						error: function(menuItems,error){
-							alert("Could not save data");
-						}
-					});
+					success: function(menuItems){
+						alert("Data saved successfully"); //should change these to jquery alerts.
+					},
+					error: function(menuItems,error){
+						alert("Could not save data");
+					}
+				});
+			},
+			error: function(data) {
+			    alert("in error");
+			   var obj = jQuery.parseJSON(data);
+			   alert(obj.error);
+			}
+		    });
+			
 			
 			
 		 });
