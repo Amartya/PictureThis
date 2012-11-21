@@ -4,53 +4,69 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <link rel="stylesheet" href="css/ratchet.css" />
+        <script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
         <script src="js/rachet.js"></script>
         <script src="js/push.js"></script>
 
+        <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+        <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+        <style>
+            .content-frame {
+                padding: 0 25px;
+            }
+            #img-result {
+                width: 100%;
+            }
+            ul.list.inset {
+                margin: 0 0 25px 0;
+            }
+            #description-block {
+                margin-bottom: 25px;
+            }
+        </style>
         <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
         <script src="OCRPlugin.js" type="text/javascript"></script>
-        <script type="text/javascript" charset="utf-8">
-            
+        <script type="text/javascript" charset="utf-8">       
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value 
+
+            //Global Variables
+            var count=0;
+            var count2=0;
+            //Parse Constants
+            var MenuItems;
+
+            //Description for menu item
+            var description = "";
+            var ingredient = "";
+            var category = "";
+            var country = "";
             
-            // Wait for Cordova to connect with the device
-            //
+            //Wait for Cordova to connect with the device//
             document.addEventListener("deviceready",onDeviceReady,false);
             
-            // Cordova is ready to be used!
-            //
+            // Cordova is ready to be used! //
             function onDeviceReady() {
                 pictureSource=navigator.camera.PictureSourceType;
                 destinationType=navigator.camera.DestinationType;
             }
             
-            
             // Called when a photo is successfully retrieved
             //
-            function onPhotoURISuccess(imageURI) {
-                
-                
+            function onPhotoURISuccess(imageURI) {    
                 callNativePlugin({url_imagen: imageURI});
-                
                 //show loading screen
                 //navigator.notification.loadingStart();
             }
+    
             
-            // A button will call this function
-            //
-            function capturePhoto() {
-                // Take picture using device camera and retrieve image as file uri string
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 100,
-                                            destinationType: destinationType.FILE_URI });
-            }
-            
-            // A button will call this function
-            //
+            // Calls the camera
             function capturePhotoEdit() {
                 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, allowEdit: true,
-                                            destinationType: destinationType.FILE_URI });
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 100, allowEdit: true,destinationType: destinationType.FILE_URI });
             }
             
             // Called if something bad happens.
@@ -66,57 +82,145 @@
             function nativePluginResultHandler (result) { 
                 //stop loading screen
                 //navigator.notification.loadingStop();
+                Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                document.getElementById("search_photo_btn").style.display = 'none';
+                document.getElementById("search_photo_btn").disabled=true; 
+                var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+                url+=result;
 
-                var ocr_res = document.getElementById("ocr");
-                ocr_res.innerHTML = result;
+                $.ajax({
+                        type:"GET",
+                        url:url,
+                        dataType: "json",
+                        success:function(data){
+                            document.getElementById("img-result").src = data.items[0].link;
+                        },
+                        error:function(data){
+                            alert("cannot search");
+                        }
+                }); 
+                grabDescription(result);
+                $("div#another_photo").show();
             } 
             
             function nativePluginErrorHandler (error) { 
                 alert("error: "+error);
             }
-        </script>
 
-        <script type="text/javascript">     
+            //Get description from Parse
+            function grabDescription(searchstr) {
+                var query = new Parse.Query(window.MenuItems);
+                query.equalTo("Name", searchstr.toLowerCase());
+                query.find({
+                    success: function(results) {
+                            for (var resultCount=0;resultCount<results.length;resultCount++){
+                                parseDescription(results[resultCount].get("Description"));
+                                count=results[resultCount].get("Likes");
+                                count2=results[resultCount].get("Dislikes");
+                                document.getElementById("counter").innerHTML = count;
+                                document.getElementById("counter2").innerHTML = count2;
+                                $("div#description-block").show();
+                            }
 
-            function loadHTML(node, url, timeout) {
-                if (timeout == undefined)
-                    timeout = 10000;
-
-                var req = new XMLHttpRequest();
-                var timer = setTimeout(function() {
-                    try {
-                        req.abort();
-                    } catch(e) {}
-                    navigator.notification.loadingStop();
-                }, );
-
-                req.onreadystatechange = function() {
-                    if (req.readyState == 4) {
-                        if (req.status < 300) {
-                            clearTimeout(timer);
-
-                            var html = req.responseText;
-                            html.replace(/.*<body>/, '');
-                            html.replace(/<\/body>.*/, '');
-
-                            node.innerHTML = html;
-                        }
-                        navigator.notification.loadingStop();
-                        delete req;
-                        delete node;
+                            if(results.length==0){
+                                //Reset fields if item not found in Parse
+                                resetDescription();
+                                $("div#description-block").show();
+                            }
+                        },
+                    error: function(error) {
+                        alert("Failed to get data from Parse");
+                        //Reset fields if there was an error in communicating with Parse
+                        resetDescription();
                     }
-                };
-                req.open('GET', url, true);
-                req.send();
-            }
-            function getData(){
-                loadHTML(document.getElementById("content"), 'www.google.com', 3000);
+                });
             }
 
+            //If no data found, reset description to N/A
+            function resetDescription(){
+                document.getElementById("description").innerHTML = "<b>Description: </b>" + "N/A";
+                document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + "N/A";
+                document.getElementById("category").innerHTML = "<b>Category: </b>" + "N/A";
+                document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + "N/A";
+            }
+
+            //Parse the description string being returned from the database (Parse.com)
+            function parseDescription(wholeDesc){
+                var index_desc = wholeDesc.indexOf("#description#", 0);
+                description = wholeDesc.substring(0, index_desc);//fetches description
+
+                var index_ingrd = wholeDesc.indexOf("#ingredient#", index_desc);
+                ingredient = wholeDesc.substring(index_desc + 13, index_ingrd);//fetches ingredient
+
+                var index_cat = wholeDesc.indexOf("#category#", index_ingrd);
+                category = wholeDesc.substring(index_ingrd + 12, index_cat);//fetches category
+
+                var index_country = wholeDesc.indexOf("#country#", index_cat);
+                country = wholeDesc.substring(index_cat + 10, index_country);//fetches country
+
+                //Setting the descriptions
+                document.getElementById("description").innerHTML = "<b>Description: </b>" + description;
+                document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + ingredient;
+                document.getElementById("category").innerHTML = "<b>Category: </b>" + category;
+                document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + country;
+            }
+
+            function initialize(){
+                Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                MenuItems = Parse.Object.extend("MenuItems");
+            }
+
+            function changeCount(){
+                count++;
+                document.getElementById("counter").innerHTML = count;
+
+                MenuItems = Parse.Object.extend("MenuItems");
+                var menuItems = new Parse.Query(MenuItems);
+                var searchResult= document.getElementById("search").value.toLowerCase();
+
+                menuItems.equalTo("Name", searchResult);
+
+                menuItems.find({
+                    success: function(results) {
+                            for (var resultCount=0;resultCount<results.length;resultCount++){
+                            results[resultCount].set("Likes", count);
+                            results[resultCount].save();
+                            }
+                        },
+                    error: function(error) {
+                        alert("Failed to get data from Parse");
+                    }
+                }); 
+                document.getElementById("btn").disabled=true;   
+                document.getElementById("btn2").disabled=true;      
+            }
+            
+            function changeCount2(){
+                count2++;
+                document.getElementById("counter2").innerHTML = count2;
+                MenuItems = Parse.Object.extend("MenuItems");
+                var menuItems = new Parse.Query(MenuItems);
+                var searchResult= document.getElementById("search").value.toLowerCase();
+
+                menuItems.equalTo("Name", searchResult);
+                menuItems.find({
+                    success: function(results) {
+                            for (var resultCount=0;resultCount<results.length;resultCount++){
+                            results[resultCount].set("Dislikes", count2);
+                            results[resultCount].save();
+                            }
+                        },
+                    error: function(error) {
+                        alert("Failed to get data from Parse");
+                    }
+                }); 
+                document.getElementById("btn").disabled=true;   
+                document.getElementById("btn2").disabled=true;  
+            }
         </script>
     </head>
 
-    <body>
+    <body onload="initialize()">
         <!-Title Bar->
         <header class="bar-title">
             <h1 class="title">Picture This</h1>
@@ -146,8 +250,30 @@
           </ul>
         </nav>
         <div id="home" class="content">
-            <button onclick="capturePhotoEdit();">Take Photo</button>
-            <p id='ocr'></p>
+            <br><br>
+            <div class="content-frame">
+                <form class="padded">
+                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Snap It</a>
+                </form>
+                <br>
+                <image id="img-result"/>
+                <br><br>
+                <div id="description-block" style="display:none;">
+                    <ul class="list inset" id="detail">
+                        <li id="description"><b>Description: </b>N/A</li>
+                        <li id="ingredient"><b>Main Ingredients(s): </b>N/A</li>
+                        <li id="category"><b>Category: </b>N/A</li>
+                        <li id="country"><b>Country of Origin: </b>N/A</li>
+                    </ul>
+                    <!--
+                    <button class="button-positive" onclick="changeCount()" id="btn"> Helpful <span id="counter" class="count">N/A</span></button>
+                    <button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>-->
+                </div>
+                <br>
+                <div id = "another_photo" style="display:none;">
+                    <a class="button button-block" id="search_photo_again_btn" onclick="javascript:capturePhotoEdit()">Capture Again</a>
+                </div>
+            </div>
         </div>
     </body>
 </html>
