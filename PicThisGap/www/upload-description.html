@@ -68,11 +68,7 @@
 			}
 		    });
 			
-			
-		 });
-		 
-		 $("#submit").click(function(){
-				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 				window.MenuItems = Parse.Object.extend("MenuItems");
 				menuItems=new MenuItems();
 				
@@ -94,6 +90,12 @@
 							alert("Could not save data");
 						}
 					});
+			
+			
+		 });
+		 
+		 $("#submit").click(function(){
+				
 			});
 			
 		});
@@ -123,11 +125,8 @@
 			</div>
 			<fieldset>
 				<input type="file" name="fileselect" id="fileselect"></input>
-				<a class="button button-block" id="uploadbutton">Upload Image</a>
+				<a class="button button-block" id="uploadbutton">Submit</a>
 			</fieldset>
-		</form>
-		<form class="padded">
-			<a class="button button-block" id="submit">Submit</a>
 		</form>
         </div>
 	
