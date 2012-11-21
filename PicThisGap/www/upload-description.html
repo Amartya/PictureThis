@@ -35,7 +35,6 @@
 		$(document).ready(function(){
 		
 		$('#fileselect').bind("change", function(e) {
-			alert("come here");
 		    var files = e.target.files || e.dataTransfer.files;
 		    // Our file var now holds the selected file
 		    file = files[0];
@@ -124,7 +123,7 @@
 			</div>
 			<fieldset>
 				<input type="file" name="fileselect" id="fileselect"></input>
-				<input id="uploadbutton" type="button" value="Upload to Parse"/>
+				<a class="button button-block" id="uploadbutton">Upload Image</a>
 			</fieldset>
 		</form>
 		<form class="padded">
