@@ -35,7 +35,6 @@
 		//Global Variables
 		var count=0;
 		var count2=0;
-		var url="no";
 		//Parse Constants
 		var MenuItems;
 
@@ -49,16 +48,22 @@
 			$("#submit").click(function(){
 				document.getElementById("btn").disabled=false;	
 				document.getElementById("btn2").disabled=false;	
-				
-				var currentSearchString = document.getElementById("search").value;
-				
-				grabDescription(currentSearchString);
-				
-
+				var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+				url+=document.getElementById("search").value;
 				//Sending search string to Parse
-				
-				
-				
+				var currentSearchString = document.getElementById("search").value;
+				$.ajax({
+						type:"GET",
+						url:url,
+						dataType: "json",
+						success:function(data){
+							document.getElementById("img-result").src = data.items[0].link;
+						},
+						error:function(data){
+							alert("cannot search");
+						}
+				});
+				grabDescription(currentSearchString);
 			});
 
 			$("body").keypress(function(event){
@@ -71,7 +76,6 @@
 
 		//Get description from Parse
 		function grabDescription(searchstr) {
-		
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 			var query = new Parse.Query(MenuItems);
@@ -83,40 +87,23 @@
 							parseDescription(results[resultCount].get("Description"));
 							count=results[resultCount].get("Likes");
 							count2=results[resultCount].get("Dislikes");
-							url=results[resultCount].get("Image");
-							if(url=="no")
-							{
-								url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
-								url+=document.getElementById("search").value;
-							}
 							document.getElementById("counter").innerHTML = count;
 							document.getElementById("counter2").innerHTML = count2;
 							$("div#description-block").show();
-						}				
-						$.ajax({
-							type:"GET",
-							url:url,
-							dataType: "json",
-							success:function(data){
-								document.getElementById("img-result").src = data.items[0].link;
-							},
-						error:function(data){
-							alert("cannot search");
-							}
-						});
+						}
+
 						if(results.length==0){
 							//Reset fields if item not found in Parse
 							resetDescription();
 							$("div#description-block").show();
 						}
-						alert(url);
 					},
 				error: function(error) {
 					alert("Failed to get data from Parse");
 					//Reset fields if there was an error in communicating with Parse
 					resetDescription();
 				}
-			});//end of find
+			});
 		}
 
 		//If no data found, reset description to N/A
@@ -151,7 +138,6 @@
 		function loadParseData(){
 			count=0;
 			count2=0;
-			url="no";
 			document.getElementById("counter").innerHTML = count;
 			document.getElementById("counter2").innerHTML = count2;
 				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
@@ -230,7 +216,7 @@
 	      </a>
 	    </li>
 	    <li class="tab-item">
-	      <a href="upload-description.html">
+	      <a href="upload.html">
 	        <img class="tab-icon" src="img/settings.png">
 	        <div class="tab-label">Upload</div>
 	      </a>
@@ -239,43 +225,44 @@
 	</nav>
 
 	<div id="home" class="content">
-	<!-Slider->
-	<!--
-	<div class="slider">
-	  <ul>
-	    <li>
-	      <img src="img/slide-1.jpg">
-	      <span class="slide-text">← Slide me</span>
-	    </li>
-	    <li>
-	      <img src="img/slide-2.jpg">
-	    </li>
-	    <li>
-	      <img src="img/slide-3.jpg">
-	    </li>
-	  </ul>
-	</div>
-	-->
+		<!-Slider->
+		<!--
+		<div class="slider">
+		  <ul>
+		    <li>
+		      <img src="img/slide-1.jpg">
+		      <span class="slide-text">← Slide me</span>
+		    </li>
+		    <li>
+		      <img src="img/slide-2.jpg">
+		    </li>
+		    <li>
+		      <img src="img/slide-3.jpg">
+		    </li>
+		  </ul>
+		</div>
+		-->
 
-	<br><br>
-	<div class="content-frame">
-		<form class="padded">
-			<input type="search" id="search" placeholder="What's on the menu?"/><br>
-			<a class="button button-block" id="submit" >Search</a>
-	 	</form>
-	 	<br>
-		<image id="img-result"/>
 		<br><br>
+		<div class="content-frame">
+			<form class="padded">
+				<input type="search" id="search" placeholder="What's on the menu?"/><br>
+				<a class="button button-block" id="submit" >Search</a>
+		 	</form>
+		 	<br>
+			<image id="img-result"/>
+			<br><br>
 
-		<div id="description-block" style="display:none;">
-			<ul class="list inset" id="detail">
-				<li id="description"><b>Description: </b>N/A</li>
-				<li id="ingredient"><b>Main Ingredients(s): </b>N/A</li>
-				<li id="category"><b>Category: </b>N/A</li>
-				<li id="country"><b>Country of Origin: </b>N/A</li>
-			</ul>
-			<button class="button-positive" onclick="changeCount()" id="btn"> Helpful <span id="counter" class="count">N/A</span></button>
-			<button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>
+			<div id="description-block" style="display:none;">
+				<ul class="list inset" id="detail">
+					<li id="description"><b>Description: </b>N/A</li>
+					<li id="ingredient"><b>Main Ingredients(s): </b>N/A</li>
+					<li id="category"><b>Category: </b>N/A</li>
+					<li id="country"><b>Country of Origin: </b>N/A</li>
+				</ul>
+				<button class="button-positive" onclick="changeCount()" id="btn"> Helpful <span id="counter" class="count">N/A</span></button>
+				<button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>
+			</div>
 		</div>
 	</div>
 </body>

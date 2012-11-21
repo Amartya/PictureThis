@@ -1,141 +1,211 @@
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" href="css/ratchet.css" />
-        <script src="js/rachet.js"></script>
-        <script src="js/push.js"></script>
-        <script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<meta charset="utf-8">
 
-        <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
-        <script type="text/javascript" charset="utf-8">
-            var file;
-            
-            function useExistingPhoto()
-            {
-                capture(Camera.PictureSourceType.SAVEDPHOTOALBUM);
-            }
-            
-            function capture(sourceType)
-            {
-                navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
-                    destinationType: Camera.DestinationType.FILE_URI,
-                    sourceType: sourceType,
-                    correctOrientation: true
-                });
-            }
-            
-            function onCaptureSuccess(imageURI)
-            {
-                var fail, ft, options, params, win;
-                // callback for when the photo has been successfully uploaded:
-                success: function(response) {
-                  alert("Your photo has been uploaded!");
-                };
-                // callback if the photo fails to upload successfully.
-                fail: function(error) {
-                  alert("An error has occurred: Code = " + error.code);
-                };
-                options = new FileUploadOptions();
-                // parameter name of file:
-                options.fileKey = "my_image";
-                // name of the file:
-                options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
-                // mime type:
-                options.mimeType = "text/plain";
-                params = {
-                  val1: "some value",
-                  val2: "some other value"
-                };
-                options.params = params;
-                ft = new FileTransfer();
-                ft.upload(imageURI, 'http://example.com/path/to/service', success, fail, options);
-            }
+	<!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-            // there was an error capturing the photo:
-            function onCaptureFail(message)
-            {
-              alert("Failed because: " + message);
-            }
-            
-            function upload()
-            {
-                var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+	<style>
+		.content-frame {
+			padding: 0 25px;
+		}
+		#img-result {
+			width: 100%;
+		}
+		ul.list.inset {
+			margin: 0 0 25px 0;
+		}
+		#description-block {
+			margin-bottom: 25px;
+		}
 
-            $.ajax({
-               type: "POST",
-               beforeSend: function(request)
-               {
-                    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
-                    request.setRequestHeader("X-Parse-REST-API-Key", 'qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY');
-                    request.setRequestHeader("Content-Type", file.type);
-                },
-                url: serverUrl,
-                data: file,
-                processData: false,
-                contentType: false,
-                success: function(data)
-                {
+		input.file {
+			display: block;
+		  	padding: 11px 0 13px;
+		  	margin-bottom: 10px;
+		  	font-size: 16px;
+		}
 
-                    // save result from Parse local storage, so we can use it later
-                    localStorage.setItem('parse_file_name', data.name);
-                    localStorage.setItem('parse_url', data.url);
-                  
-                     // this is actual file name we uploaded, which is different from name Parse sends us bak
-                    localStorage.setItem('file_name', file.name);
+		/* Active state for block level buttons */
+		input.file {
+		  padding: 12px 0;
+		}
 
-                    // OPTIONAL: add service to save file name/URL to a list
-                },
-                error: function(data) {
-                   var obj = jQuery.parseJSON(data);
-                   alert(obj.error);
-                }
-            });
-            }
-            
-            function initializeParse()
-            {
-		Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-                
-	    }
-            
-        </script>
 
-    </head>
+	</style>
+	<link rel="stylesheet" href="css/ratchet.css" />
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+	<script src="js/ratchet.js"></script>
+    <script type="text/javascript" charset="utf-8">       
+        var pictureSource;   // picture source
+        var destinationType; // sets the format of returned value 
+		
+		var userInput;
+		var MenuIems;
+		var menuItems;
+		var file;
 
-    <body onload="intializeParse()">
-        <!-Title Bar->
-        <header class="bar-title">
-            <h1 class="title">Picture This</h1>
-        </header>
+		 //Wait for Cordova to connect with the device//
+        document.addEventListener("deviceready",onDeviceReady,false);
+        
+        // Cordova is ready to be used! //
+        function onDeviceReady() {
+            pictureSource=navigator.camera.PictureSourceType;
+            destinationType=navigator.camera.DestinationType;
+        }
 
-        <!-Footer Bar-> 
-        <nav class="bar-tab">
-          <ul class="tab-inner">
-            <li class="tab-item active">
-              <a href="camera.html" data-ajax="false" data-transition="slide-in">
-                <img class="tab-icon" src="img/camera.png">
-                <div class="tab-label">Camera</div>
-              </a>
-            </li>
-            <li class="tab-item">
-              <a href="index.html"  data-ajax="false" data-transition="slide-in">
-                <img class="tab-icon" src="img/search.png">
-                <div class="tab-label">Search</div>
-              </a>
-            </li>
-            <li class="tab-item">
-              <a href="">
-                <img class="tab-icon" src="img/settings.png">
-                <div class="tab-label">Settings</div>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <div id="home" class="content">
-            <button onclick="capturePhotoEdit();">Upload photo</button>
-            <p id='ocr'></p>
+		$(document).ready(function(){
+			/*$('#fileselect').bind("change", function(e) {
+			    var files = e.target.files || e.dataTransfer.files;
+			    // Our file var now holds the selected file
+			    file = files[0];
+			});*/
+			
+			$('#uploadbutton').click(function() {
+			    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+				var imageURLreturned;
+				var image = document.getElementById('myImage') ;
+				alert(file.type);
+
+			    $.ajax({
+			       type: "POST",
+			       beforeSend: function(request)
+			       {
+				    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+				    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
+				    request.setRequestHeader("Content-Type", "image/jpeg");
+					},
+					url: serverUrl,
+					data: file,
+					processData: false,
+					contentType: false,
+				
+					success: function(data)
+					{
+						alert("in success");
+						alert("File available at " + data.url);
+						imageURLreturned = data.url;
+						
+						Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+						window.MenuItems = Parse.Object.extend("MenuItems");
+						menuItems=new MenuItems();
+						
+						userInput=document.getElementById("description").value+"#description#"+
+								document.getElementById("ingredient").value+"#ingredient#"+
+								document.getElementById("category").value+"#category#"+
+								document.getElementById("country").value+"#country#";
+					
+						var name=document.getElementById("name").value;
+						menuItems.set("Description",userInput);
+						menuItems.set("Name",name);
+						menuItems.set("Likes",0);
+						menuItems.set("Dislikes",0);
+						menuItems.set("Image",imageURLreturned);
+						menuItems.save(null,{
+							success: function(menuItems){
+								alert("Data saved successfully"); //should change these to jquery alerts.
+							},
+							error: function(menuItems,error){
+								alert("Could not save data");
+							}
+						});
+					},
+					error: function(data) {
+					    alert("in error");
+					   var obj = jQuery.parseJSON(data);
+					   alert(obj.error);
+					}
+			    });
+			 });	
+		});
+		
+        // Called when a photo is successfully retrieved
+        function onPhotoURISuccess(imageURI) { 
+        	var image = new Image() ;
+        	image.src=imageURI;
+        	alert(image.type);
+        }
+        
+        // Calls the camera
+        function capturePhoto() {
+            // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+            navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, allowEdit: false,destinationType: destinationType.FILE_URI });
+        }
+        
+        // Called if something bad happens.
+        // 
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+	
+		function initialParse()
+		{
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+		}
+	</script>
+	
+</head>
+<body onload="initialParse()">
+	<!-Title Bar->
+	<header class="bar-title">
+		<h1 class="title">Picture This</h1>
+  	</header>
+  	
+  	<!-Footer Bar->
+  	<nav class="bar-tab">
+	  <ul class="tab-inner">
+	    <li class="tab-item">
+	      <a href="camera.html">
+	        <img class="tab-icon" src="img/camera.png">
+	        <div class="tab-label">Camera</div>
+	      </a>
+	    </li>
+	    <li class="tab-item">
+	      <a href="">
+	        <img class="tab-icon" src="img/search.png">
+	        <div class="tab-label">Search</div>
+	      </a>
+	    </li>
+	    <li class="tab-item active">
+	      <a href="upload.html">
+	        <img class="tab-icon" src="img/settings.png">
+	        <div class="tab-label">Upload</div>
+	      </a>
+	    </li>
+	  </ul>
+	</nav>
+	<div id="home" class="content">
+		<br><br>
+		<div class="content-frame">
+			<br><br>
+			<form class="padded">
+		        <a class="button button-block" id="fileselect" onclick="javascript:capturePhoto()">Take Photo</a>
+		        <textarea id="how_to_take_photo" rows="3">
+		                    Take a photo of the dish and fill out the information below. Thanks:).
+		        </textarea>       
+            </form>
+			<form id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
+				<div class="input-group">
+					<input type="text" id="name" placeholder="Dish Name">
+					<input type="text" id="description" placeholder="Description">
+					<input type="text" id="ingredient" placeholder="Main Ingredient">
+					<input type="text" id="category" placeholder="Category">
+					<input type="text" id="country" placeholder="Country of Origin">
+				</div>
+				<fieldset>
+					<a class="button button-block" id="uploadbutton">Submit</a>
+				</fieldset>
+			</form>
+			<image style="display:none; width:60px; height=60px;" id="myImage"  src=""/>
         </div>
-    </body>
+
+    </div>
+</body>
 </html>

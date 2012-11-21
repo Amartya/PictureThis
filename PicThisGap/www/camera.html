@@ -11,7 +11,6 @@
         <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
         <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
         <style>
             .content-frame {
@@ -82,25 +81,28 @@
             function nativePluginResultHandler (result) { 
                 //stop loading screen
                 //navigator.notification.loadingStop();
-                Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                document.getElementById("how_to_take_photo").style.display = 'none';
                 document.getElementById("search_photo_btn").style.display = 'none';
                 document.getElementById("search_photo_btn").disabled=true; 
                 var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+                result = ltrim(result);
+                result = rtrim(result);
+
                 url+=result;
 
+                grabDescription(result);
                 $.ajax({
                         type:"GET",
                         url:url,
                         dataType: "json",
                         success:function(data){
                             document.getElementById("img-result").src = data.items[0].link;
+                            $("div#another_photo").show();
                         },
                         error:function(data){
                             alert("cannot search");
                         }
                 }); 
-                grabDescription(result);
-                $("div#another_photo").show();
             } 
             
             function nativePluginErrorHandler (error) { 
@@ -109,6 +111,10 @@
 
             //Get description from Parse
             function grabDescription(searchstr) {
+
+                Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                window.MenuItems = Parse.Object.extend("MenuItems");
+
                 var query = new Parse.Query(window.MenuItems);
                 query.equalTo("Name", searchstr.toLowerCase());
                 query.find({
@@ -165,9 +171,13 @@
                 document.getElementById("country").innerHTML = "<b>Country of Origin: </b>" + country;
             }
 
-            function initialize(){
-                Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-                MenuItems = Parse.Object.extend("MenuItems");
+            function loadParseData(){
+                count=0;
+                count2=0;
+                document.getElementById("counter").innerHTML = count;
+                document.getElementById("counter2").innerHTML = count2;
+                    Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+                    window.MenuItems = Parse.Object.extend("MenuItems");
             }
 
             function changeCount(){
@@ -217,10 +227,21 @@
                 document.getElementById("btn").disabled=true;   
                 document.getElementById("btn2").disabled=true;  
             }
+
+            //Trim whitespace
+            function trim(stringToTrim) {
+                return stringToTrim.replace(/^\s+|\s+$/g,"");
+            }
+            function ltrim(stringToTrim) {
+                return stringToTrim.replace(/^\s+/,"");
+            }
+            function rtrim(stringToTrim) {
+                return stringToTrim.replace(/\s+$/,"");
+            }
         </script>
     </head>
 
-    <body onload="initialize()">
+    <body onload="loadParseData()">
         <!-Title Bar->
         <header class="bar-title">
             <h1 class="title">Picture This</h1>
@@ -242,9 +263,9 @@
               </a>
             </li>
             <li class="tab-item">
-              <a href="">
+              <a href="update.html">
                 <img class="tab-icon" src="img/settings.png">
-                <div class="tab-label">Settings</div>
+                <div class="tab-label">Upload</div>
               </a>
             </li>
           </ul>
@@ -253,7 +274,10 @@
             <br><br>
             <div class="content-frame">
                 <form class="padded">
-                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Snap It</a>
+                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
+                    <textarea id="how_to_take_photo" rows="3">
+                        Take a photo of the menu and then select the part you wish to search for.
+                    </textarea>
                 </form>
                 <br>
                 <image id="img-result"/>
@@ -265,13 +289,12 @@
                         <li id="category"><b>Category: </b>N/A</li>
                         <li id="country"><b>Country of Origin: </b>N/A</li>
                     </ul>
-                    <!--
                     <button class="button-positive" onclick="changeCount()" id="btn"> Helpful <span id="counter" class="count">N/A</span></button>
-                    <button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>-->
+                    <button class="button-negative" onclick="changeCount2()" id="btn2"> Not Helpful <span id="counter2" class="count">N/A</span></button>
                 </div>
                 <br>
                 <div id = "another_photo" style="display:none;">
-                    <a class="button button-block" id="search_photo_again_btn" onclick="javascript:capturePhotoEdit()">Capture Again</a>
+                    <a class="button button-block" id="search_photo_again_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
                 </div>
             </div>
         </div>
