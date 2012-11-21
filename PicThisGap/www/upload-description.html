@@ -31,7 +31,46 @@
 	var userInput;
 	var MenuIems;
 	var menuItems;
+	var file;
 		$(document).ready(function(){
+		
+		$('#fileselect').bind("change", function(e) {
+			alert("come here");
+		    var files = e.target.files || e.dataTransfer.files;
+		    // Our file var now holds the selected file
+		    file = files[0];
+		});
+		
+		$('#uploadbutton').click(function() {
+		
+		    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+	
+		    $.ajax({
+		       type: "POST",
+		       beforeSend: function(request)
+		       {
+			    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+			    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
+			    request.setRequestHeader("Content-Type", file.type);
+			},
+			url: serverUrl,
+			data: file,
+			processData: false,
+			contentType: false,
+			success: function(data)
+			{
+			    alert("in success");
+			    alert("File available at " + data.url);
+			},
+			error: function(data) {
+			    alert("in error");
+			   var obj = jQuery.parseJSON(data);
+			   alert(obj.error);
+			}
+		    });
+		 });
+		 
+		 
 			$("#submit").click(function(){
 			
 				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
@@ -77,6 +116,10 @@
 		<input type="text" id="category" placeholder="Category">
 		<input type="text" id="country" placeholder="Country of Origin">
 		</div>
+		<fieldset>
+		<a class="button button-block" id="fileselect">Choose the image</a>
+		<a class="button button-block" id="uploadbutton">Upload the image</a>
+        </fieldset>
 	</form>
 	<form class="padded">
 			<a class="button button-block" id="submit">Submit</a>
