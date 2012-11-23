@@ -9,20 +9,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-	<style>
-		.content-frame {
-			padding: 0 25px;
-		}
-		#img-result {
-			width: 100%;
-		}
-		ul.list.inset {
-			margin: 0 0 25px 0;
-		}
-		#description-block {
-			margin-bottom: 25px;
-		}
-	</style>
+ 	<style>
+        .content-frame {
+            padding: 0 25px;
+        }
+        #img-result {
+            width: 100%;
+        }
+        ul.list.inset {
+            margin: 0 0 25px 0;
+        }
+        #description-block {
+            margin-bottom: 25px;
+        }
+    </style>
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
@@ -108,50 +108,56 @@
 	
 </head>
 <body onload="initialParse()">
+	<!-Title Bar->
 	<header class="bar-title">
-            <h1 class="title">Picture This</h1>
-        </header>
-	
+		<h1 class="title">Picture This</h1>
+  	</header>
+  	
+  	<!-Footer Bar->
+  	<nav class="bar-tab">
+	  <ul class="tab-inner">
+	    <li class="tab-item">
+	      <a href="camera.html">
+	        <img class="tab-icon" src="img/camera.png">
+	        <div class="tab-label">Camera</div>
+	      </a>
+	    </li>
+	    <li class="tab-item">
+	      <a href="">
+	        <img class="tab-icon" src="img/search.png">
+	        <div class="tab-label">Search</div>
+	      </a>
+	    </li>
+	    <li class="tab-item active">
+	      <a href="upload.html">
+	        <img class="tab-icon" src="img/settings.png">
+	        <div class="tab-label">Upload</div>
+	      </a>
+	    </li>
+	  </ul>
+	</nav>
 	<div id="home" class="content">
-		<form id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
-			<div class="input-group">
-				<input type="text" id="name" placeholder="Dish Name">
-				<input type="text" id="description" placeholder="Description">
-				<input type="text" id="ingredient" placeholder="Main Ingredient">
-				<input type="text" id="category" placeholder="Category">
-				<input type="text" id="country" placeholder="Country of Origin">
-			</div>
-			<fieldset>
-				<input type="file" name="fileselect" id="fileselect"></input>
-				<a class="button button-block" id="uploadPhoto">Upload Photo</a>
-				<a class="button button-block" id="uploadbutton">Submit</a>
-			</fieldset>
-		</form>
-        </div>
+        <br><br>
+        <div class="content-frame">
+			<form class = "padded" id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
+				<fieldset>
+					<input type="file" name="fileselect" id="fileselect"></input>
+					<a class="button button-block" id="uploadPhoto">Upload Photo</a>
+				</fieldset>
+				<div class="input-group">
+					<input type="text" id="name" placeholder="Dish Name">
+					<input type="text" id="description" placeholder="Description">
+					<input type="text" id="ingredient" placeholder="Main Ingredient">
+					<input type="text" id="category" placeholder="Category">
+					<input type="text" id="country" placeholder="Country of Origin">
+				</div>
+				<fieldset>
+					<a class="button button-block" id="uploadbutton">Submit</a>
+				</fieldset>
+			</form>
+		</div>
+    </div>
 	
-	<!-Footer Bar-> 
-        <nav class="bar-tab">
-          <ul class="tab-inner">
-            <li class="tab-item active">
-              <a href="camera.html" data-ajax="false" data-transition="slide-in">
-                <img class="tab-icon" src="img/camera.png">
-                <div class="tab-label">Camera</div>
-              </a>
-            </li>
-            <li class="tab-item">
-              <a href="index.html"  data-ajax="false" data-transition="slide-in">
-                <img class="tab-icon" src="img/search.png">
-                <div class="tab-label">Search</div>
-              </a>
-            </li>
-            <li class="tab-item">
-              <a href="">
-                <img class="tab-icon" src="img/settings.png">
-                <div class="tab-label">Settings</div>
-              </a>
-            </li>
-          </ul>
-        </nav>
         
 </body>
 </html>
