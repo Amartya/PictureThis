@@ -10,6 +10,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
  	<style>
+ 		#load-background{
+		    display:    none;
+		    z-index:    500;
+		    height: 100%;
+		    width: 100%;
+		    background: rgba(220,220,220,.8);
+		}
+ 		#loading{
+		    display:    none;
+		    z-index:    501;
+		}
+
         .content-frame {
             padding: 0 25px;
         }
@@ -27,87 +39,95 @@
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
 	<script src="js/ratchet.js"></script>
+	<script src="js/align.js"></script> <!-- for aligning elements on page-->
 	<script type="text/javascript">
-	var userInput;
-	var MenuIems;
-	var menuItems;
-	var file;
-		$(document).ready(function(){
-		
-		$('#fileselect').bind("change", function(e) {
-		    var files = e.target.files || e.dataTransfer.files;
-		    // Our file var now holds the selected file
-		    file = files[0];
-		});
-		$('#uploadPhoto').click(function()
-		{
-			$('#fileselect').click();
-		});
-		$('#uploadbutton').click(function() {
-		
-		    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
-			var imageURLreturned;
-		    $.ajax({
-		       type: "POST",
-		       beforeSend: function(request)
-		       {
-			    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
-			    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
-			    request.setRequestHeader("Content-Type", file.type);
-			},
-			url: serverUrl,
-			data: file,
-			processData: false,
-			contentType: false,
-			success: function(data)
-			{
-				alert("in success");
-				alert("File available at " + data.url);
-				imageURLreturned = data.url;
-				
-				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-				window.MenuItems = Parse.Object.extend("MenuItems");
-				menuItems=new MenuItems();
-				
-				userInput=document.getElementById("description").value+"#description#"+
-						document.getElementById("ingredient").value+"#ingredient#"+
-						document.getElementById("category").value+"#category#"+
-						document.getElementById("country").value+"#country#";
+		var userInput;
+		var MenuIems;
+		var menuItems;
+		var file;
+			$(document).ready(function(){
 			
-				var name=document.getElementById("name").value;
-				menuItems.set("Description",userInput);
-				menuItems.set("Name",name);
-				menuItems.set("Likes",0);
-				menuItems.set("Dislikes",0);
-				menuItems.set("Image",imageURLreturned);
-				menuItems.save(null,{
-					success: function(menuItems){
-						alert("Data saved successfully"); //should change these to jquery alerts.
-					},
-					error: function(menuItems,error){
-						alert("Could not save data");
-					}
-				});
-			},
-			error: function(data) {
-			    alert("in error");
-			   var obj = jQuery.parseJSON(data);
-			   alert(obj.error);
-			}
-		    });	//end of ajax			
-		 });//end of uploadbutton
-		});//end of ready
-	
-	function initialParse()
-	{
-		Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-		window.MenuItems = Parse.Object.extend("MenuItems");
-		document.getElementById("fileselect").style.display = "none";
-	}
+			$('#fileselect').bind("change", function(e) {
+			    var files = e.target.files || e.dataTransfer.files;
+			    // Our file var now holds the selected file
+			    file = files[0];
+			});
+			$('#uploadPhoto').click(function()
+			{
+				$('#fileselect').click();
+			});
+			$('#uploadbutton').click(function() {
+				//using align.js to centre the loader on screen.
+				$('#load-background').center();
+				$('#load-background').show();
+				$("#loading").center();
+				$('#loading').show();
+
+			    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+				var imageURLreturned;
+			    $.ajax({
+			       type: "POST",
+			       beforeSend: function(request)
+			       {
+				    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+				    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
+				    request.setRequestHeader("Content-Type", file.type);
+				},
+				url: serverUrl,
+				data: file,
+				processData: false,
+				contentType: false,
+				success: function(data)
+				{	
+					//Change status on success
+					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
+					
+					imageURLreturned = data.url;
+					
+					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+					window.MenuItems = Parse.Object.extend("MenuItems");
+					menuItems=new MenuItems();
+					
+					userInput=document.getElementById("description").value+"#description#"+
+							document.getElementById("ingredient").value+"#ingredient#"+
+							document.getElementById("category").value+"#category#"+
+							document.getElementById("country").value+"#country#";
+				
+					var name=document.getElementById("name").value;
+					menuItems.set("Description",userInput);
+					menuItems.set("Name",name);
+					menuItems.set("Likes",0);
+					menuItems.set("Dislikes",0);
+					menuItems.set("Image",imageURLreturned);
+					menuItems.save(null,{
+						success: function(menuItems){
+							$('#loading').hide();
+							$('#load-background').hide();
+						},
+						error: function(menuItems,error){
+							alert("Could not save data, try again.");
+						}
+					});
+				},
+				error: function(data) {
+				   $('#loading').hide();
+				   $('#load-background').hide();
+			       alert("Could not save data, try again.");
+				   var obj = jQuery.parseJSON(data);
+				}
+			    });	//end of ajax			
+			 });//end of uploadbutton
+			});//end of ready		
+		function initializeParse()
+		{
+			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+			window.MenuItems = Parse.Object.extend("MenuItems");
+			document.getElementById("fileselect").style.display = "none";
+		}
 	</script>
 	
 </head>
-<body onload="initialParse()">
+<body onload="initializeParse()">
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Picture This</h1>
@@ -123,7 +143,7 @@
 	      </a>
 	    </li>
 	    <li class="tab-item">
-	      <a href="">
+	      <a href="index.html">
 	        <img class="tab-icon" src="img/search.png">
 	        <div class="tab-label">Search</div>
 	      </a>
@@ -148,7 +168,7 @@
 					<input type="text" id="name" placeholder="Dish Name">
 					<input type="text" id="description" placeholder="Description">
 					<input type="text" id="ingredient" placeholder="Main Ingredient">
-					<input type="text" id="category" placeholder="Category">
+					<input type="text" id="category" placeholder="Category: Veg/Non-Veg/Vegan...">
 					<input type="text" id="country" placeholder="Country of Origin">
 				</div>
 				<fieldset>
@@ -157,7 +177,16 @@
 			</form>
 		</div>
     </div>
-	
-        
+	<div id="loading" >
+  		<ul class="list inset" id="detail">
+			<li id="description" >
+		  		<img src="img/loading.gif" style="margin-left:50%;" />
+  				<br><br>
+				<p id="status"> <b>Foodie Karma Awaits...</b></p>
+			</li>
+		</ul> 
+	</div>
+	<div id="load-background">
+	</div>
 </body>
 </html>

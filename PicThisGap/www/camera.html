@@ -6,13 +6,23 @@
         <link rel="stylesheet" href="css/ratchet.css" />
         <script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
         <script src="js/rachet.js"></script>
-        <script src="js/push.js"></script>
-
         <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+        <script src="js/align.js"></script> <!-- for aligning elements on page-->
         <style>
+            #load-background{
+                display:    none;
+                z-index:    500;
+                height: 100%;
+                width: 100%;
+                background: rgba(220,220,220,.8);
+            }
+            #loading{
+                display:    none;
+                z-index:    501;
+            }
             .content-frame {
                 padding: 0 25px;
             }
@@ -55,10 +65,14 @@
             
             // Called when a photo is successfully retrieved
             //
-            function onPhotoURISuccess(imageURI) {    
+            function onPhotoURISuccess(imageURI) { 
+                //using align.js to centre the loader on screen.
+                $('#load-background').center();
+                $('#load-background').show();
+                $("#loading").center();
+                $('#loading').show(); 
+                  
                 callNativePlugin({url_imagen: imageURI});
-                //show loading screen
-                //navigator.notification.loadingStart();
             }
     
             
@@ -98,9 +112,13 @@
                         success:function(data){
                             document.getElementById("img-result").src = data.items[0].link;
                             $("div#another_photo").show();
+                            $('#loading').hide();
+                            $('#load-background').hide();
                         },
                         error:function(data){
                             alert("cannot search");
+                            $('#loading').hide();
+                            $('#load-background').hide();
                         }
                 }); 
             } 
@@ -126,6 +144,8 @@
                                 document.getElementById("counter").innerHTML = count;
                                 document.getElementById("counter2").innerHTML = count2;
                                 $("div#description-block").show();
+                                $('#loading').hide();
+                                $('#load-background').hide();
                             }
 
                             if(results.length==0){
@@ -136,6 +156,8 @@
                         },
                     error: function(error) {
                         alert("Failed to get data from Parse");
+                        $('#loading').hide();
+                        $('#load-background').hide();
                         //Reset fields if there was an error in communicating with Parse
                         resetDescription();
                     }
@@ -275,9 +297,11 @@
             <div class="content-frame">
                 <form class="padded">
                     <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
-                    <textarea id="how_to_take_photo" rows="3">
-                        Take a photo of the menu and then select the part you wish to search for.
-                    </textarea>
+                    <ul class="inset list"> 
+                        <li id="how_to_take_photo">
+                            Take a photo of the menu and then select the part you wish to search for.
+                        </li>
+                    </ul>
                 </form>
                 <br>
                 <image id="img-result"/>
@@ -297,6 +321,17 @@
                     <a class="button button-block" id="search_photo_again_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
                 </div>
             </div>
+        </div>
+        <div id="loading" >
+            <ul class="list inset" id="detail">
+                <li id="description" >
+                    <img src="img/loading.gif" style="margin-left:50%;" />
+                    <br><br>
+                    <p id="status"> <b>Hungry yet?</b></p>
+                </li>
+            </ul> 
+        </div>
+        <div id="load-background">
         </div>
     </body>
 </html>

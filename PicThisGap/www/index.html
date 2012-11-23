@@ -12,6 +12,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 	<style>
+		#load-background{
+		    display:    none;
+		    z-index:    500;
+		    height: 100%;
+		    width: 100%;
+		    background: rgba(220,220,220,.8);
+		}
+ 		#loading{
+		    display:    none;
+		    z-index:    501;
+		}
 		.content-frame {
 			padding: 0 25px;
 		}
@@ -30,7 +41,7 @@
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
 	<script src="js/rachet.js"></script>
-
+	<script src="js/align.js"></script> <!-- for aligning elements on page-->
 	<script type="text/javascript">
 		//Global Variables
 		var count=0;
@@ -47,8 +58,15 @@
 
 		$(document).ready(function(){
 			$("#submit").click(function(){
+				//using align.js to centre the loader on screen.
+				$('#load-background').center();
+				$('#load-background').show();
+				$("#loading").center();
+				$('#loading').show();
+
 				document.getElementById("btn").disabled=false;	
 				document.getElementById("btn2").disabled=false;	
+				document.getElementById("how_to_take_photo").style.display = 'none';
 				
 				//Sending search string to Parse
 				var currentSearchString = document.getElementById("search").value;	
@@ -96,9 +114,13 @@
 									url:url,
 									dataType: "json",
 									success:function(data){
+										$('#loading').hide();
+				   						$('#load-background').hide();
 										document.getElementById("img-result").src = data.items[0].link;
 									},
 									error:function(data){
+										$('#loading').hide();
+				   						$('#load-background').hide();
 										alert("cannot search");
 									}
 								});
@@ -106,6 +128,8 @@
 							else
 							{
 								document.getElementById("img-result").src=url;
+								$('#loading').hide();
+		   						$('#load-background').hide();
 							}
 						if(results.length==0){
 							//Reset fields if item not found in Parse
@@ -264,6 +288,11 @@
 			<form class="padded">
 				<input type="search" id="search" placeholder="What's on the menu?"/><br>
 				<a class="button button-block" id="submit" >Search</a>
+                <ul class="inset list"> 
+                    <li id="how_to_take_photo">
+                        Type the menu item you are interested in.You'll see a photo and description (if available) of the menu item.
+                	</li>
+                </ul>
 		 	</form>
 		 	<br>
 			<image id="img-result"/>
@@ -281,6 +310,18 @@
 			</div>
 		</div>
 	</div>
+
+    <div id="loading" >
+        <ul class="list inset" id="detail">
+            <li id="description" >
+                <img src="img/loading.gif" style="margin-left:50%;" />
+                <br><br>
+                <p id="status"> <b>Searching...</b></p>
+            </li>
+        </ul> 
+    </div>
+    <div id="load-background">
+    </div>
 </body>
 
 </html>
