@@ -51,8 +51,7 @@
 				document.getElementById("btn2").disabled=false;	
 				
 				//Sending search string to Parse
-				var currentSearchString = document.getElementById("search").value;
-				
+				var currentSearchString = document.getElementById("search").value;	
 				grabDescription(currentSearchString);
 			});
 
@@ -80,25 +79,34 @@
 							url=results[resultCount].get("Image");
 							if(url=="no")
 							{
-							var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
-				url+=document.getElementById("search").value;
-				}
+								var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+								url+=document.getElementById("search").value;
+							}
 							document.getElementById("counter").innerHTML = count;
 							document.getElementById("counter2").innerHTML = count2;
 							$("div#description-block").show();
-							$.ajax({
-						type:"GET",
-						url:url,
-						dataType: "json",
-						success:function(data){
-							document.getElementById("img-result").src = data.items[0].link;
-						},
-						error:function(data){
-							alert("cannot search");
 						}
-				});
-						}
-
+							if(url=="no")
+							{
+								var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+								url+=document.getElementById("search").value;
+							
+								$.ajax({
+									type:"GET",
+									url:url,
+									dataType: "json",
+									success:function(data){
+										document.getElementById("img-result").src = data.items[0].link;
+									},
+									error:function(data){
+										alert("cannot search");
+									}
+								});
+							}
+							else
+							{
+								document.getElementById("img-result").src=url;
+							}
 						if(results.length==0){
 							//Reset fields if item not found in Parse
 							resetDescription();
