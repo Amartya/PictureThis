@@ -22,190 +22,136 @@
 		#description-block {
 			margin-bottom: 25px;
 		}
-
-		input.file {
-			display: block;
-		  	padding: 11px 0 13px;
-		  	margin-bottom: 10px;
-		  	font-size: 16px;
-		}
-
-		/* Active state for block level buttons */
-		input.file {
-		  padding: 12px 0;
-		}
-
-
 	</style>
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
 	<script src="js/ratchet.js"></script>
-    <script type="text/javascript" charset="utf-8">       
-        var pictureSource;   // picture source
-        var destinationType; // sets the format of returned value 
-		
-		var userInput;
-		var MenuIems;
-		var menuItems;
-		var file;
-
-		 //Wait for Cordova to connect with the device//
-        document.addEventListener("deviceready",onDeviceReady,false);
-        
-        // Cordova is ready to be used! //
-        function onDeviceReady() {
-            pictureSource=navigator.camera.PictureSourceType;
-            destinationType=navigator.camera.DestinationType;
-        }
-
+	<script type="text/javascript">
+	var userInput;
+	var MenuIems;
+	var menuItems;
+	var file;
 		$(document).ready(function(){
-			/*$('#fileselect').bind("change", function(e) {
-			    var files = e.target.files || e.dataTransfer.files;
-			    // Our file var now holds the selected file
-			    file = files[0];
-			});*/
-			
-			$('#uploadbutton').click(function() {
-			    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
-				var imageURLreturned;
-				var image = document.getElementById('myImage') ;
-				alert(file.type);
-
-			    $.ajax({
-			       type: "POST",
-			       beforeSend: function(request)
-			       {
-				    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
-				    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
-				    request.setRequestHeader("Content-Type", "image/jpeg");
-					},
-					url: serverUrl,
-					data: file,
-					processData: false,
-					contentType: false,
-				
-					success: function(data)
-					{
-						alert("in success");
-						alert("File available at " + data.url);
-						imageURLreturned = data.url;
-						
-						Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-						window.MenuItems = Parse.Object.extend("MenuItems");
-						menuItems=new MenuItems();
-						
-						userInput=document.getElementById("description").value+"#description#"+
-								document.getElementById("ingredient").value+"#ingredient#"+
-								document.getElementById("category").value+"#category#"+
-								document.getElementById("country").value+"#country#";
-					
-						var name=document.getElementById("name").value;
-						menuItems.set("Description",userInput);
-						menuItems.set("Name",name);
-						menuItems.set("Likes",0);
-						menuItems.set("Dislikes",0);
-						menuItems.set("Image",imageURLreturned);
-						menuItems.save(null,{
-							success: function(menuItems){
-								alert("Data saved successfully"); //should change these to jquery alerts.
-							},
-							error: function(menuItems,error){
-								alert("Could not save data");
-							}
-						});
-					},
-					error: function(data) {
-					    alert("in error");
-					   var obj = jQuery.parseJSON(data);
-					   alert(obj.error);
-					}
-			    });
-			 });	
-		});
 		
-        // Called when a photo is successfully retrieved
-        function onPhotoURISuccess(imageURI) { 
-        	var image = new Image() ;
-        	image.src=imageURI;
-        	alert(image.type);
-        }
-        
-        // Calls the camera
-        function capturePhoto() {
-            // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-            navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, allowEdit: false,destinationType: destinationType.FILE_URI });
-        }
-        
-        // Called if something bad happens.
-        // 
-        function onFail(message) {
-            alert('Failed because: ' + message);
-        }
-	
-		function initialParse()
+		$('#fileselect').bind("change", function(e) {
+		    var files = e.target.files || e.dataTransfer.files;
+		    // Our file var now holds the selected file
+		    file = files[0];
+		});
+		$('#uploadPhoto').click(function()
 		{
-			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-			window.MenuItems = Parse.Object.extend("MenuItems");
-		}
+			$('#fileselect').click();
+		});
+		$('#uploadbutton').click(function() {
+		
+		    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+			var imageURLreturned;
+		    $.ajax({
+		       type: "POST",
+		       beforeSend: function(request)
+		       {
+			    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+			    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
+			    request.setRequestHeader("Content-Type", file.type);
+			},
+			url: serverUrl,
+			data: file,
+			processData: false,
+			contentType: false,
+			success: function(data)
+			{
+				alert("in success");
+				alert("File available at " + data.url);
+				imageURLreturned = data.url;
+				
+				Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+				window.MenuItems = Parse.Object.extend("MenuItems");
+				menuItems=new MenuItems();
+				
+				userInput=document.getElementById("description").value+"#description#"+
+						document.getElementById("ingredient").value+"#ingredient#"+
+						document.getElementById("category").value+"#category#"+
+						document.getElementById("country").value+"#country#";
+			
+				var name=document.getElementById("name").value;
+				menuItems.set("Description",userInput);
+				menuItems.set("Name",name);
+				menuItems.set("Likes",0);
+				menuItems.set("Dislikes",0);
+				menuItems.set("Image",imageURLreturned);
+				menuItems.save(null,{
+					success: function(menuItems){
+						alert("Data saved successfully"); //should change these to jquery alerts.
+					},
+					error: function(menuItems,error){
+						alert("Could not save data");
+					}
+				});
+			},
+			error: function(data) {
+			    alert("in error");
+			   var obj = jQuery.parseJSON(data);
+			   alert(obj.error);
+			}
+		    });	//end of ajax			
+		 });//end of uploadbutton
+		});//end of ready
+	
+	function initialParse()
+	{
+		Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+		window.MenuItems = Parse.Object.extend("MenuItems");
+		document.getElementById("fileselect").style.display = "none";
+	}
 	</script>
 	
 </head>
 <body onload="initialParse()">
-	<!-Title Bar->
 	<header class="bar-title">
-		<h1 class="title">Picture This</h1>
-  	</header>
-  	
-  	<!-Footer Bar->
-  	<nav class="bar-tab">
-	  <ul class="tab-inner">
-	    <li class="tab-item">
-	      <a href="camera.html">
-	        <img class="tab-icon" src="img/camera.png">
-	        <div class="tab-label">Camera</div>
-	      </a>
-	    </li>
-	    <li class="tab-item">
-	      <a href="">
-	        <img class="tab-icon" src="img/search.png">
-	        <div class="tab-label">Search</div>
-	      </a>
-	    </li>
-	    <li class="tab-item active">
-	      <a href="upload.html">
-	        <img class="tab-icon" src="img/settings.png">
-	        <div class="tab-label">Upload</div>
-	      </a>
-	    </li>
-	  </ul>
-	</nav>
+            <h1 class="title">Picture This</h1>
+        </header>
+	
 	<div id="home" class="content">
-		<br><br>
-		<div class="content-frame">
-			<br><br>
-			<form class="padded">
-		        <a class="button button-block" id="fileselect" onclick="javascript:capturePhoto()">Take Photo</a>
-		        <textarea id="how_to_take_photo" rows="3">
-		                    Take a photo of the dish and fill out the information below. Thanks:).
-		        </textarea>       
-            </form>
-			<form id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
-				<div class="input-group">
-					<input type="text" id="name" placeholder="Dish Name">
-					<input type="text" id="description" placeholder="Description">
-					<input type="text" id="ingredient" placeholder="Main Ingredient">
-					<input type="text" id="category" placeholder="Category">
-					<input type="text" id="country" placeholder="Country of Origin">
-				</div>
-				<fieldset>
-					<a class="button button-block" id="uploadbutton">Submit</a>
-				</fieldset>
-			</form>
-			<image style="display:none; width:60px; height=60px;" id="myImage"  src=""/>
+		<form id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
+			<div class="input-group">
+				<input type="text" id="name" placeholder="Dish Name">
+				<input type="text" id="description" placeholder="Description">
+				<input type="text" id="ingredient" placeholder="Main Ingredient">
+				<input type="text" id="category" placeholder="Category">
+				<input type="text" id="country" placeholder="Country of Origin">
+			</div>
+			<fieldset>
+				<input type="file" name="fileselect" id="fileselect"></input>
+				<a class="button button-block" id="uploadPhoto">Upload Photo</a>
+				<a class="button button-block" id="uploadbutton">Submit</a>
+			</fieldset>
+		</form>
         </div>
-
-    </div>
+	
+	<!-Footer Bar-> 
+        <nav class="bar-tab">
+          <ul class="tab-inner">
+            <li class="tab-item active">
+              <a href="camera.html" data-ajax="false" data-transition="slide-in">
+                <img class="tab-icon" src="img/camera.png">
+                <div class="tab-label">Camera</div>
+              </a>
+            </li>
+            <li class="tab-item">
+              <a href="index.html"  data-ajax="false" data-transition="slide-in">
+                <img class="tab-icon" src="img/search.png">
+                <div class="tab-label">Search</div>
+              </a>
+            </li>
+            <li class="tab-item">
+              <a href="">
+                <img class="tab-icon" src="img/settings.png">
+                <div class="tab-label">Settings</div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
 </body>
 </html>
