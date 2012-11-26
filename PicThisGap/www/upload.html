@@ -93,7 +93,10 @@
 							document.getElementById("category").value+"#category#"+
 							document.getElementById("country").value+"#country#";
 				
-					var name=document.getElementById("name").value;
+					var name=document.getElementById("name").value.toLowerCase();
+					name = ltrim(name);
+					name = rtrim(name);
+					
 					menuItems.set("Description",userInput);
 					menuItems.set("Name",name);
 					menuItems.set("Likes",0);
@@ -123,6 +126,17 @@
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 			document.getElementById("fileselect").style.display = "none";
+		}
+
+		//Trimming string to remove spaces
+		function trim(stringToTrim) {
+			return stringToTrim.replace(/^\s+|\s+$/g,"");
+		}
+		function ltrim(stringToTrim) {
+			return stringToTrim.replace(/^\s+/,"");
+		}
+		function rtrim(stringToTrim) {
+			return stringToTrim.replace(/\s+$/,"");
 		}
 	</script>
 	

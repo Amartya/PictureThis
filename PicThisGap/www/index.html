@@ -86,8 +86,11 @@
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 			var query = new Parse.Query(MenuItems);
-
+			searchstr = ltrim(searchstr);
+			searchstr = rtrim(searchstr);
 			query.equalTo("Name", searchstr.toLowerCase());
+
+			
 			query.find({
 				success: function(results) {
 						for (var resultCount=0;resultCount<results.length;resultCount++){
@@ -190,6 +193,8 @@
 			MenuItems = Parse.Object.extend("MenuItems");
 			var menuItems = new Parse.Query(MenuItems);
 			var searchResult= document.getElementById("search").value.toLowerCase();
+			searchResult = ltrim(searchResult);
+			searchResult = rtrim(searchResult);
 
 			menuItems.equalTo("Name", searchResult);
 
@@ -214,6 +219,8 @@
 			MenuItems = Parse.Object.extend("MenuItems");
 			var menuItems = new Parse.Query(MenuItems);
 			var searchResult= document.getElementById("search").value.toLowerCase();
+			searchResult = ltrim(searchResult);
+			searchResult = rtrim(searchResult);
 
 			menuItems.equalTo("Name", searchResult);
 			menuItems.find({
@@ -229,6 +236,17 @@
 			});	
 			document.getElementById("btn").disabled=true;	
 			document.getElementById("btn2").disabled=true;	
+		}
+
+		//Trimming string to remove spaces
+		function trim(stringToTrim) {
+			return stringToTrim.replace(/^\s+|\s+$/g,"");
+		}
+		function ltrim(stringToTrim) {
+			return stringToTrim.replace(/^\s+/,"");
+		}
+		function rtrim(stringToTrim) {
+			return stringToTrim.replace(/\s+$/,"");
 		}
 	</script>
 
