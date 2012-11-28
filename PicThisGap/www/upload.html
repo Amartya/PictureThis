@@ -61,7 +61,7 @@
 		var curLong;
 		
 			$(document).ready(function(){
-			
+			getLocation();
 			$('#fileselect').bind("change", function(e) {
 			    var files = e.target.files || e.dataTransfer.files;
 			    // Our file var now holds the selected file
@@ -72,6 +72,7 @@
 			{
 				$('#fileselect').click();
 			});
+			
 			$('#uploadbutton').click(function() {
 			
 			if(!check())
@@ -79,7 +80,7 @@
 			//	alert("fail");
 				return;
 			}
-			//getLocation();
+			
 		
 				//using align.js to centre the loader on screen.
 				$('#load-background').center();
@@ -107,7 +108,7 @@
 					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
 					
 					imageURLreturned = data.url;
-					
+					alert("checking: " + imageURLreturned);
 					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 					window.MenuItems = Parse.Object.extend("MenuItems");
 					menuItems=new MenuItems();
@@ -125,7 +126,9 @@
 					menuItems.set("Name",name);
 					menuItems.set("Likes",0);
 					menuItems.set("Dislikes",0);
+					alert(imageURLreturned);
 					menuItems.set("Image",imageURLreturned);
+					alert("after submit: " + window.point);
 					menuItems.set("Location",window.point);
 					menuItems.save(null,{
 						success: function(menuItems){
@@ -167,7 +170,7 @@
 		}
 		function check()
 		{
-			if(photoValidate!=1)
+		/*	if(photoValidate!=1)
 			{
 				document.getElementById("uploadPhoto").innerHTML="uploading photo is required";
 				return false;
@@ -177,11 +180,11 @@
 			{
 				$("#name").attr('placeholder', 'Name is required');
 				return false;
-			}
+			}*/
 			return true;
 			
 		}
-	/*	function getLocation()
+		function getLocation()
 		{
 			if(navigator.geolocation)
 	        {
@@ -194,6 +197,7 @@
 			function successLoc(position){
             	curLat = position.coords.latitude;
         		curLong = position.coords.longitude;
+				alert(curLat);
 				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
         	}
         	function errorLoc(){
@@ -201,7 +205,7 @@
 				curLat = 42.0411;
 				curLong = -87.6901;
 				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
-        	}*/
+        	}
 	</script>
 	
 </head>
