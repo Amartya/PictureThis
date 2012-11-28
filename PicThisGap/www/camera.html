@@ -316,16 +316,16 @@
         <div id="home" class="content">
             <br><br>
             <div class="content-frame">
-                <form class="padded">
-                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
-                    <ul class="inset list"> 
+            	<ul class="inset list"> 
                         <li id="instruction_box">
                             <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Take a picture of your menu (centered roughly around the item in question), pan and zoom the captured image so that only your item's name appears within the selection box, and PictureThis will return a photo and, if available, a brief description of the menu item.
                         </li>
 						<li id="ocr_error" style="display:none;">
-							Oops - we weren't able to determine your menu item's name from the photo. You can trying searching for it manually <a href="index.html">here</a>.
+							Oops - we weren't able to determine your menu item's name from the photo. You can trying searching for it manually <a href="index.html" class="bold">here</a>.
 						</li>
                     </ul>
+                <form class="padded">
+                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
                 </form>
                 <br>
 				<b id="name"></b>
