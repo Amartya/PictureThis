@@ -43,7 +43,6 @@
 			font-weight: bold;
 		}
     </style>
-    </style>
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
@@ -54,19 +53,36 @@
 		var MenuIems;
 		var menuItems;
 		var file;
+		var photoValidate;
+		//store location in parse
+		var geocoder;
+		var point;
+		var curLat;
+		var curLong;
+		
 			$(document).ready(function(){
-			
+			getLocation();
 			$('#fileselect').bind("change", function(e) {
 			    var files = e.target.files || e.dataTransfer.files;
 			    // Our file var now holds the selected file
 			    file = files[0];
+				photoValidate=1;
 			});
 			$('#uploadPhoto').click(function()
 			{
 				$('#fileselect').click();
 			});
+			
 			$('#uploadbutton').click(function() {
-				//using align.js to centre the loader on screen.
+			
+			if(!check())
+			{
+			//	alert("fail");
+				return;
+			}
+			
+		
+			//using align.js to centre the loader on screen.
 				$('#load-background').center();
 				$('#load-background').show();
 				$("#loading").center();
@@ -92,7 +108,6 @@
 					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
 					
 					imageURLreturned = data.url;
-					
 					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 					window.MenuItems = Parse.Object.extend("MenuItems");
 					menuItems=new MenuItems();
@@ -111,6 +126,7 @@
 					menuItems.set("Likes",0);
 					menuItems.set("Dislikes",0);
 					menuItems.set("Image",imageURLreturned);
+					menuItems.set("Location",window.point);
 					menuItems.save(null,{
 						success: function(menuItems){
 							$('#loading').hide();
@@ -132,6 +148,8 @@
 			});//end of ready		
 		function initializeParse()
 		{
+			photoValidate=0;
+		//	geocoder = new google.maps.Geocoder();
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 			document.getElementById("fileselect").style.display = "none";
@@ -147,8 +165,44 @@
 		function rtrim(stringToTrim) {
 			return stringToTrim.replace(/\s+$/,"");
 		}
+		function check()
+		{
+		/*	if(photoValidate!=1)
+			{
+				document.getElementById("uploadPhoto").innerHTML="uploading photo is required";
+				return false;
+			}
+			var nameCheck=document.getElementById("name").value;
+			if(nameCheck.length<1)
+			{
+				$("#name").attr('placeholder', 'Name is required');
+				return false;
+			}*/
+			return true;
+			
+		}
+		function getLocation()
+		{
+			if(navigator.geolocation)
+	        {
+				navigator.geolocation.getCurrentPosition(successLoc,errorLoc);
+	        }
+	        else{
+		            alert("Couldn't get location information");
+	        }
+		}
+			function successLoc(position){
+            	curLat = position.coords.latitude;
+        		curLong = position.coords.longitude;
+				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
+        	}
+        	function errorLoc(){
+				//Get user location from I.P.address.
+				curLat = 42.0411;
+				curLong = -87.6901;
+				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
+        	}
 	</script>
-	
 </head>
 <body onload="initializeParse()">
 	<!-Title Bar->
