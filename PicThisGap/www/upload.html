@@ -43,6 +43,7 @@
 			font-weight: bold;
 		}
     </style>
+    </style>
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
@@ -53,35 +54,18 @@
 		var MenuIems;
 		var menuItems;
 		var file;
-		var photoValidate;
-		//store location in parse
-		var geocoder;
-		var point;
-		var curLat;
-		var curLong;
-		
 			$(document).ready(function(){
-			getLocation();
+			
 			$('#fileselect').bind("change", function(e) {
 			    var files = e.target.files || e.dataTransfer.files;
 			    // Our file var now holds the selected file
 			    file = files[0];
-				photoValidate=1;
 			});
 			$('#uploadPhoto').click(function()
 			{
 				$('#fileselect').click();
 			});
-			
 			$('#uploadbutton').click(function() {
-			
-			if(!check())
-			{
-			//	alert("fail");
-				return;
-			}
-			
-		
 				//using align.js to centre the loader on screen.
 				$('#load-background').center();
 				$('#load-background').show();
@@ -108,7 +92,7 @@
 					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
 					
 					imageURLreturned = data.url;
-					alert("checking: " + imageURLreturned);
+					
 					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 					window.MenuItems = Parse.Object.extend("MenuItems");
 					menuItems=new MenuItems();
@@ -126,10 +110,7 @@
 					menuItems.set("Name",name);
 					menuItems.set("Likes",0);
 					menuItems.set("Dislikes",0);
-					alert(imageURLreturned);
 					menuItems.set("Image",imageURLreturned);
-					alert("after submit: " + window.point);
-					menuItems.set("Location",window.point);
 					menuItems.save(null,{
 						success: function(menuItems){
 							$('#loading').hide();
@@ -151,8 +132,6 @@
 			});//end of ready		
 		function initializeParse()
 		{
-			photoValidate=0;
-		//	geocoder = new google.maps.Geocoder();
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
 			document.getElementById("fileselect").style.display = "none";
@@ -168,51 +147,13 @@
 		function rtrim(stringToTrim) {
 			return stringToTrim.replace(/\s+$/,"");
 		}
-		function check()
-		{
-		/*	if(photoValidate!=1)
-			{
-				document.getElementById("uploadPhoto").innerHTML="uploading photo is required";
-				return false;
-			}
-			var nameCheck=document.getElementById("name").value;
-			if(nameCheck.length<1)
-			{
-				$("#name").attr('placeholder', 'Name is required');
-				return false;
-			}*/
-			return true;
-			
-		}
-		function getLocation()
-		{
-			if(navigator.geolocation)
-	        {
-				navigator.geolocation.getCurrentPosition(successLoc,errorLoc);
-	        }
-	        else{
-		            alert("Couldn't get location information");
-	        }
-		}
-			function successLoc(position){
-            	curLat = position.coords.latitude;
-        		curLong = position.coords.longitude;
-				alert(curLat);
-				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
-        	}
-        	function errorLoc(){
-				//Get user location from I.P.address.
-				curLat = 42.0411;
-				curLong = -87.6901;
-				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
-        	}
 	</script>
 	
 </head>
 <body onload="initializeParse()">
 	<!-Title Bar->
 	<header class="bar-title">
-		<h1 class="title">Picture This</h1>
+		<h1 class="title">Chowpedia</h1>
   	</header>
   	
   	<!-Footer Bar->
@@ -245,7 +186,7 @@
                     <li id="instruction_box">
                         <span class="bold">Help a foodie out!</span> Ordered something awesome? Share your discovery with others by uploading a photo of your dish, as well as a name and a short description. Foodie karma awaits!
                 	</li>
-                </ul>
+            </ul>
 			<form class = "padded" id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
 				<fieldset>
 					<input type="file" name="fileselect" id="fileselect"></input>
@@ -267,7 +208,7 @@
 	<div id="loading" >
   		<ul class="list inset" id="detail">
 			<li id="description" >
-		  		<img src="img/loading.gif"/>
+		  		<img src="img/loading.gif" style="margin-left:50%;" />
   				<br><br>
 				<p id="status"> <b>Foodie Karma Awaits...</b></p>
 			</li>

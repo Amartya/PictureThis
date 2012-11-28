@@ -10,13 +10,12 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-        <script src="js/align.js"></script> <!-- for aligning elements on page-->
-        <style>
+                <style>
             #load-background{
-                display:    none;
-                z-index:    500;
-                height: 100%;
-                width: 100%;
+                display:none;
+                z-index:500;
+                height:100%;
+                width:100%;
                 background: rgba(220,220,220,.8);
             }
             #loading{
@@ -32,17 +31,18 @@
             ul.list.inset {
                 margin: 0 0 25px 0;
             }
-            #instruction_box {
-			padding: 20px 20px 20px 20px;
-			width: inherit;
-			text-align: left;
-			}
-			#description-block {
-				margin-bottom: 25px;
-			}
-			.bold {
-				font-weight: bold;
-			}
+            #instruction_box, #ocr_error {
+            padding: 20px 20px 20px 20px;
+            width: inherit;
+            text-align: left;
+            }
+            #description-block {
+                margin-bottom: 25px;
+            }
+            #ocr_error.bold {
+                font-weight: bold;
+                margin:none;
+            }
         </style>
         <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
         <script src="OCRPlugin.js" type="text/javascript"></script>
@@ -75,12 +75,12 @@
             // Called when a photo is successfully retrieved
             //
             function onPhotoURISuccess(imageURI) { 
+                console.log("In photo URI Success");
                 //using align.js to centre the loader on screen.
                 $('#load-background').center();
                 $('#load-background').show();
                 $("#loading").center();
                 $('#loading').show(); 
-
                 callNativePlugin({url_imagen: imageURI});
             }
     
@@ -94,6 +94,8 @@
             // Called if something bad happens.
             // 
             function onFail(message) {
+                console.log("In photo URI FAIL");
+
                 alert('Failed because: ' + message);
             }
             
@@ -101,46 +103,57 @@
                 OCRPlugin.callNativeFunction( nativePluginResultHandler, nativePluginErrorHandler, returnSuccess ); 
             } 
             
+
             function nativePluginResultHandler (result) { 
-                //stop loading screen
-                //navigator.notification.loadingStop();
-                document.getElementById("how_to_take_photo").style.display = 'none';
-                document.getElementById("search_photo_btn").style.display = 'none';
-                document.getElementById("search_photo_btn").disabled=true; 
-                var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
-                result = ltrim(result);
-                result = rtrim(result);
+                console.log("In nativePluginResultHandler");
+                console.log(result);
 
-                url+=result;
+                if(checkStr(result)){
+                    document.getElementById("instruction_box").style.display = 'none';
+                    document.getElementById("search_photo_btn").style.display = 'none';
+                    document.getElementById("search_photo_btn").disabled=true; 
+                    var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
+                    result = ltrim(result);
+                    result = rtrim(result);
 
-                grabDescription(result);
-                $.ajax({
-                        type:"GET",
-                        url:url,
-                        dataType: "json",
-                        success:function(data){
-                            document.getElementById("img-result").src = data.items[0].link;
-                            $("div#another_photo").show();
-                            $('#loading').hide();
-                            $('#load-background').hide();
-                        },
-                        error:function(data){
-                            alert("cannot search");
-                            $('#loading').hide();
-                            $('#load-background').hide();
-                        }
-                }); 
+                    url+=result;
+
+                    grabDescription(result);
+                    $.ajax({
+                            type:"GET",
+                            url:url,
+                            dataType: "json",
+                            success:function(data){
+                                document.getElementById("img-result").src = data.items[0].link;
+                                $("div#another_photo").show();
+                                $('#loading').hide();
+                                $('#load-background').hide();
+                            },
+                            error:function(data){
+                                alert("cannot search");
+                                $('#loading').hide();
+                                $('#load-background').hide();
+                            }
+                    }); 
+                }
+                else{
+                    console.log("OCR returned unreadable text");
+                    document.getElementById("instruction_box").style.display = 'none';
+                    document.getElementById("ocr_error").style.display = 'block';
+                }
             } 
             
             function nativePluginErrorHandler (error) { 
-                //alert("error: "+error);
-				document.getElementById("how_to_take_photo").style.display = 'none';
+                console.log("In nativePluginErrorHandler");
+                $('#loading').hide();
+                $('#load-background').hide();
+				document.getElementById("instruction_box").style.display = 'none';
 				document.getElementById("ocr_error").style.display = 'block';
+                //debug.log("In plugin Failure");
             }
 
             //Get description from Parse
             function grabDescription(searchstr) {
-
                 Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
                 window.MenuItems = Parse.Object.extend("MenuItems");
 
@@ -281,6 +294,20 @@
             function rtrim(stringToTrim) {
                 return stringToTrim.replace(/\s+$/,"");
             }
+
+            //Check for special characters
+            function checkStr(result){
+                console.log(result.length);
+               var iChars = "!@#$%^&*()+=-[]\\\';,./{}|\":<>?~_";
+               for (var i = 0; i < result.length; i++) {
+                    if (iChars.indexOf(result.charAt(i)) != -1) {
+                        console.log("Your string has special characters. \nThese are not allowed.");
+                        return false;
+                    }
+                }
+
+            }
+
         </script>
     </head>
 
@@ -316,16 +343,16 @@
         <div id="home" class="content">
             <br><br>
             <div class="content-frame">
-            	<ul class="inset list"> 
-                        <li id="instruction_box">
-                            <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Take a picture of your menu (centered roughly around the item in question), pan and zoom the captured image so that only your item's name appears within the selection box, and PictureThis will return a photo and, if available, a brief description of the menu item.
-                        </li>
-						<li id="ocr_error" style="display:none;">
-							Oops - we weren't able to determine your menu item's name from the photo. You can trying searching for it manually <a href="index.html" class="bold">here</a>.
-						</li>
-                    </ul>
+                <ul class="inset list"> 
+                    <li id="instruction_box">
+                        <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Take a picture of your menu (centered roughly around the item in question), pan and zoom the captured image so that only your item's name appears within the selection box, and PictureThis will return a photo and, if available, a brief description of the menu item.
+                    </li>
+                    <li id="ocr_error" style="display:none;">Oops - we weren't able to determine your menu item's name from the photo. You can trying searching for it manually<a href="index.html" class="bold">here</a>
+                    </li>
+                </ul>
+
                 <form class="padded">
-                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take Photo</a>
+                    <a class="button button-block" id="search_photo_btn" onclick="javascript:capturePhotoEdit()">Take a Photo</a>
                 </form>
                 <br>
 				<b id="name"></b>

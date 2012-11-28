@@ -74,7 +74,7 @@
 
 				document.getElementById("btn").disabled=false;	
 				document.getElementById("btn2").disabled=false;	
-				document.getElementById("how_to_take_photo").style.display = 'none';
+				document.getElementById("instruction_box").style.display = 'none';
 				
 				//Sending search string to Parse
 				var currentSearchString = document.getElementById("search").value;	
@@ -259,7 +259,7 @@
 <body onload="loadParseData()"> 
 	<!-Title Bar->
 	<header class="bar-title">
-		<h1 class="title">Picture This</h1>
+		<h1 class="title">Chowpedia</h1>
   	</header>
   	
   	<!-Footer Bar->
@@ -307,11 +307,11 @@
 
 		<br><br>
 		<div class="content-frame">
-		<ul class="inset list"> 
-                    <li id="instruction_box">
-                        <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Type its name into the field below, click "Search," and PictureThis will return a photo and, if available, a brief description of the menu item.
-                	</li>
-                </ul>
+			<ul class="inset list"> 
+                <li id="instruction_box">
+                    <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Type its name into the field below, click "Search," and PictureThis will return a photo and, if available, a brief description of the menu item.
+            	</li>
+            </ul>
 			<form class="padded">
 				<input type="search" id="search" placeholder="What's on the menu?"/><br>
 				<a class="button button-block" id="submit" >Search</a>
@@ -319,7 +319,6 @@
 		 	<br>
 			<image id="img-result"/>
 			<br><br>
-
 			<div id="description-block" style="display:none;">
 				<ul class="list inset" id="detail">
 					<li id="description"><b>Description: </b>N/A</li>
