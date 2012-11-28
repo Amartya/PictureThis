@@ -144,7 +144,9 @@
                                 parseDescription(results[resultCount].get("Description"));
                                 count=results[resultCount].get("Likes");
                                 count2=results[resultCount].get("Dislikes");
-								name=results[resultCount].get("Name");
+								name=searchstr.toLowerCase();
+								name = searchstr.substring(0,1).toUpperCase() + searchstr.substring(1);
+								document.getElementById("name").innerHTML = name;
                                 document.getElementById("counter").innerHTML = count;
                                 document.getElementById("counter2").innerHTML = count2;
                                 $("div#description-block").show();
@@ -164,6 +166,12 @@
                         $('#load-background').hide();
                         //Reset fields if there was an error in communicating with Parse
                         resetDescription();
+						if(searchstr.length>0)
+						{
+							name=searchstr.toLowerCase();
+							name = searchstr.substring(0,1).toUpperCase() + searchstr.substring(1);
+							document.getElementById("name").innerHTML = name;
+						}
                     }
                 });
             }
@@ -191,7 +199,7 @@
                 country = wholeDesc.substring(index_cat + 10, index_country);//fetches country
 
                 //Setting the descriptions
-				document.getElementById("name").innerHTML = name;
+				
                 document.getElementById("description").innerHTML = "<b>Description: </b>" + description;
                 document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + ingredient;
                 document.getElementById("category").innerHTML = "<b>Category: </b>" + category;
