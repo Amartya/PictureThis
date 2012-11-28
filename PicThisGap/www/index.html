@@ -32,8 +32,16 @@
 		ul.list.inset {
 			margin: 0 0 25px 0;
 		}
+		#instruction_box {
+			padding: 20px 20px 20px 20px;
+			width: inherit;
+			text-align: left;
+		}
 		#description-block {
 			margin-bottom: 25px;
+		}
+		.bold {
+			font-weight: bold;
 		}
 	</style>
 
@@ -303,8 +311,8 @@
 				<input type="search" id="search" placeholder="What's on the menu?"/><br>
 				<a class="button button-block" id="submit" >Search</a>
                 <ul class="inset list"> 
-                    <li id="how_to_take_photo">
-                        Type the menu item you are interested in.You'll see a photo and description (if available) of the menu item.
+                    <li id="instruction_box">
+                        <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Type its name into the field above, click "Search," and PictureThis will return a photo and, if available, a brief description of the menu item.
                 	</li>
                 </ul>
 		 	</form>
