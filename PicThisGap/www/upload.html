@@ -31,9 +31,17 @@
         ul.list.inset {
             margin: 0 0 25px 0;
         }
-        #description-block {
-            margin-bottom: 25px;
-        }
+        #instruction_box {
+			padding: 20px 20px 20px 20px;
+			width: inherit;
+			text-align: left;
+		}
+		#description-block {
+			margin-bottom: 25px;
+		}
+		.bold {
+			font-weight: bold;
+		}
     </style>
 	<link rel="stylesheet" href="css/ratchet.css" />
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
@@ -173,6 +181,11 @@
 	<div id="home" class="content">
         <br><br>
         <div class="content-frame">
+        	<ul class="inset list"> 
+                    <li id="instruction_box">
+                        <span class="bold">Help a foodie out!</span> Ordered something awesome? Share your discovery with others by uploading a photo of your dish, as well as a name and a short description. Foodie karma awaits!
+                	</li>
+                </ul>
 			<form class = "padded" id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
 				<fieldset>
 					<input type="file" name="fileselect" id="fileselect"></input>
