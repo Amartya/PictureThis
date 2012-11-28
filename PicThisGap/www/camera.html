@@ -41,6 +41,7 @@
         <script type="text/javascript" charset="utf-8">       
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value 
+			var name;
 
             //Global Variables
             var count=0;
@@ -124,7 +125,9 @@
             } 
             
             function nativePluginErrorHandler (error) { 
-                alert("error: "+error);
+                //alert("error: "+error);
+				document.getElementById("how_to_take_photo").style.display = 'none';
+				document.getElementById("ocr_error").style.display = 'block';
             }
 
             //Get description from Parse
@@ -141,6 +144,7 @@
                                 parseDescription(results[resultCount].get("Description"));
                                 count=results[resultCount].get("Likes");
                                 count2=results[resultCount].get("Dislikes");
+								name=results[resultCount].get("Name");
                                 document.getElementById("counter").innerHTML = count;
                                 document.getElementById("counter2").innerHTML = count2;
                                 $("div#description-block").show();
@@ -155,7 +159,7 @@
                             }
                         },
                     error: function(error) {
-                        alert("Failed to get data from Parse");
+                        //alert("Failed to get data from Parse");
                         $('#loading').hide();
                         $('#load-background').hide();
                         //Reset fields if there was an error in communicating with Parse
@@ -187,6 +191,7 @@
                 country = wholeDesc.substring(index_cat + 10, index_country);//fetches country
 
                 //Setting the descriptions
+				document.getElementById("name").innerHTML = name;
                 document.getElementById("description").innerHTML = "<b>Description: </b>" + description;
                 document.getElementById("ingredient").innerHTML = "<b>Main Ingredient(s): </b>" + ingredient;
                 document.getElementById("category").innerHTML = "<b>Category: </b>" + category;
@@ -301,9 +306,13 @@
                         <li id="how_to_take_photo">
                             Take a photo of the menu and then select the part you wish to search for.
                         </li>
+						<li id="ocr_error" style="display:none;">
+							There was a problem with your photo. Try typing it in manually <a href="index.html">here</a>.
+						</li>
                     </ul>
                 </form>
                 <br>
+				<b id="name"></b>
                 <image id="img-result"/>
                 <br><br>
                 <div id="description-block" style="display:none;">
