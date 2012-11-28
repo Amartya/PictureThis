@@ -98,16 +98,12 @@
 							count=results[resultCount].get("Likes");
 							count2=results[resultCount].get("Dislikes");
 							url=results[resultCount].get("Image");
-							if(url=="no")
-							{
-								var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
-								url+=document.getElementById("search").value;
-							}
+
 							document.getElementById("counter").innerHTML = count;
 							document.getElementById("counter2").innerHTML = count2;
 							$("div#description-block").show();
 						}
-							if(url=="no")
+							if(!url)
 							{
 								var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
 								url+=document.getElementById("search").value;
