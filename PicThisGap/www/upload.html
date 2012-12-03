@@ -95,7 +95,6 @@
 			});
 			
 			$('#uploadbutton').click(function() {
-			    alert("Upload button clicked");
 			if(!check())
 			{
 			//	alert("fail");
@@ -126,7 +125,6 @@
 				success: function(data)
 				{	
 					//Change status on success
-					alert("Successfully uploaded photo");
 					
 					imageURLreturned = data.url;
 					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
@@ -150,7 +148,6 @@
 					menuItems.set("Location",window.point);
 					menuItems.save(null,{
 						success: function(menuItems){
-						    alert("Saved parse data in table");
 							$('#loading').hide();
 							$('#load-background').hide();
 							alert("Success!");
