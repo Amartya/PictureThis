@@ -10,7 +10,9 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-                <style>
+        <script src="js/align.js"></script> <!-- for aligning elements on page-->
+        
+        <style>
             #load-background{
                 display:none;
                 z-index:500;
@@ -90,15 +92,16 @@
             
             // Calls the camera
             function capturePhotoEdit() {
+                console.log("Before capturePhotoEdit");
                 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 100, allowEdit: true,destinationType: destinationType.FILE_URI });
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, allowEdit: true,destinationType: destinationType.FILE_URI });
+                console.log("After capturePhotoEdit");
             }
             
             // Called if something bad happens.
             // 
             function onFail(message) {
                 console.log("In photo URI FAIL");
-
                 alert('Failed because: ' + message);
             }
             
@@ -111,7 +114,7 @@
                 console.log("In nativePluginResultHandler");
                 console.log(result);
 
-                if(checkStr(result)){
+                if(checkStr(result)!=false){
                     document.getElementById("instruction_box").style.display = 'none';
                     document.getElementById("search_photo_btn").style.display = 'none';
                     document.getElementById("search_photo_btn").disabled=true; 
@@ -141,6 +144,8 @@
                 }
                 else{
                     console.log("OCR returned unreadable text");
+                    $('#loading').hide();
+                    $('#load-background').hide();
                     document.getElementById("instruction_box").style.display = 'none';
                     document.getElementById("ocr_error").style.display = 'block';
                 }
@@ -300,7 +305,7 @@
 
             //Check for special characters
             function checkStr(result){
-                console.log(result.length);
+               console.log(result.length);
                var iChars = "!@#$%^&*()+=-[]\\\';,./{}|\":<>?~_";
                for (var i = 0; i < result.length; i++) {
                     if (iChars.indexOf(result.charAt(i)) != -1) {
@@ -317,7 +322,7 @@
     <body onload="loadParseData()">
         <!-Title Bar->
         <header class="bar-title">
-            <h1 class="title">Picture This</h1>
+            <h1 class="title">Chowpedia</h1>
         </header>
 
         <!-Footer Bar-> 
@@ -348,7 +353,7 @@
             <div class="content-frame">
                 <ul class="inset list"> 
                     <li id="instruction_box">
-                        <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Take a picture of your menu (centered roughly around the item in question), pan and zoom the captured image so that only your item's name appears within the selection box, and PictureThis will return a photo and, if available, a brief description of the menu item.
+                        <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Take a picture of your menu (centered roughly around the item in question), pan and zoom the captured image so that only your item's name appears within the selection box, and Chowpedia will return a photo and, if available, a brief description of the menu item.
                     </li>
                     <li id="ocr_error" style="display:none;">Oops - we weren't able to determine your menu item's name from the photo. You can trying searching for it manually<a href="index.html" class="bold">here</a>
                     </li>
