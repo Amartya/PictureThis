@@ -59,9 +59,10 @@
 		var point;
 		var curLat;
 		var curLong;
+		document.addEventListener("deviceready", getLocation, false);
 		
 			$(document).ready(function(){
-			getLocation();
+			//getLocation();
 			$('#fileselect').bind("change", function(e) {
 			    var files = e.target.files || e.dataTransfer.files;
 			    // Our file var now holds the selected file
