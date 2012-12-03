@@ -64,10 +64,14 @@
 		var point;
 		var curLat;
 		var curLong;
-		document.addEventListener("deviceready", getLocation, false);
+		//document.addEventListener("deviceready", getLocation, false);
 		
 			$(document).ready(function(){
 			//getLocation();
+			alert("Chowpedia would like to use your current location");
+			var curLat = 42.0569705;
+			var curLong = -87.67672920000001;
+			point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
 			$('#fileselect').bind("change", function(e) {
 			    var files = e.target.files || e.dataTransfer.files;
 			    // Our file var now holds the selected file
