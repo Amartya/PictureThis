@@ -97,20 +97,26 @@
 			searchstr = ltrim(searchstr);
 			searchstr = rtrim(searchstr);
 			query.equalTo("Name", searchstr.toLowerCase());
+			var mostHelpful=0;
 
 			
 			query.find({
 				success: function(results) {
 						for (var resultCount=0;resultCount<results.length;resultCount++){
-							parseDescription(results[resultCount].get("Description"));
 							count=results[resultCount].get("Likes");
 							count2=results[resultCount].get("Dislikes");
-							url=results[resultCount].get("Image");
-
-							document.getElementById("counter").innerHTML = count;
-							document.getElementById("counter2").innerHTML = count2;
-							$("div#description-block").show();
+							if(mostHelpful< count - count2)
+							{
+								mostHelpful=count-count2;
+								parseDescription(results[resultCount].get("Description"));
+								url=results[resultCount].get("Image");
+								document.getElementById("counter").innerHTML = count;
+								document.getElementById("counter2").innerHTML = count2;
+								$("div#description-block").show();
+							}
 						}
+							
+							
 							if(!url)
 							{
 								var url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyDCrbF1xj9SY_wrjbCvJsRXyvozlOPdM9Q&cx=004374661755812987643:7r1lhezsvwy&searchType=image&q=";
