@@ -95,7 +95,7 @@
 			});
 			
 			$('#uploadbutton').click(function() {
-			
+			    alert("Upload button clicked");
 			if(!check())
 			{
 			//	alert("fail");
@@ -126,6 +126,7 @@
 				success: function(data)
 				{	
 					//Change status on success
+					alert("Successfully uploaded photo");
 					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
 					
 					imageURLreturned = data.url;
@@ -150,6 +151,7 @@
 					menuItems.set("Location",window.point);
 					menuItems.save(null,{
 						success: function(menuItems){
+						    alert("Saved parse data in table");
 							$('#loading').hide();
 							$('#load-background').hide();
 						},
@@ -161,7 +163,7 @@
 				error: function(data) {
 				   $('#loading').hide();
 				   $('#load-background').hide();
-			       alert("Could not save data, try again.");
+			       alert("Could not save photo, try again.");
 				   var obj = jQuery.parseJSON(data);
 				}
 			    });	//end of ajax			
