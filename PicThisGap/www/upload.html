@@ -127,7 +127,6 @@
 				{	
 					//Change status on success
 					alert("Successfully uploaded photo");
-					document.getElementById("status").innerHTML = "<b> Uploaded photo... </b>"
 					
 					imageURLreturned = data.url;
 					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
@@ -154,6 +153,7 @@
 						    alert("Saved parse data in table");
 							$('#loading').hide();
 							$('#load-background').hide();
+							alert("Success!");
 						},
 						error: function(menuItems,error){
 							alert("Could not save data, try again.");
