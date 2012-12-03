@@ -97,9 +97,7 @@
 			searchstr = ltrim(searchstr);
 			searchstr = rtrim(searchstr);
 			query.equalTo("Name", searchstr.toLowerCase());
-			var mostHelpful=0;
-
-			
+			var mostHelpful=-100;	
 			query.find({
 				success: function(results) {
 						for (var resultCount=0;resultCount<results.length;resultCount++){
