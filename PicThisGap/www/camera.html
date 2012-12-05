@@ -43,7 +43,7 @@
         }
         #img-result {
             width: 93%;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.3);
             background: #FFFFFF;
             padding: 10px;
         }
@@ -69,7 +69,7 @@
                 font-weight: bold;
                 margin:none;
             }
-            .name {
+            #name {
 	            font: 600 20px/20px Helvetica;
 	            margin-bottom: 10px;
             }
@@ -204,6 +204,7 @@
                                 document.getElementById("counter").innerHTML = count;
                                 document.getElementById("counter2").innerHTML = count2;
                                 $("div#description-block").show();
+                                document.getElementById("img-result").style.display = 'block';
                                 $('#loading').hide();
                                 $('#load-background').hide();
                             }
@@ -389,7 +390,7 @@
                 </form>
                 <br>
 				<b id="name"></b>
-                <image id="img-result"/>
+                <image id="img-result" style="display:none;"/>
                 <br><br>
                 <div id="description-block" style="display:none;">
                     <ul class="list inset" id="detail">

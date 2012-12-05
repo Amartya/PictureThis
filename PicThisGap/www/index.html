@@ -40,7 +40,7 @@
         }
         #img-result {
             width: 93%;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.3);
             background: #FFFFFF;
             padding: 10px;
         }
@@ -130,6 +130,7 @@
 								document.getElementById("counter").innerHTML = count;
 								document.getElementById("counter2").innerHTML = count2;
 								$("div#description-block").show();
+								document.getElementById("img-result").style.display = 'block';
 							}
 						}
 							
@@ -147,6 +148,7 @@
 										$('#loading').hide();
 				   						$('#load-background').hide();
 										document.getElementById("img-result").src = data.items[0].link;
+										document.getElementById("img-result").style.display = 'block';
 									},
 									error:function(data){
 										$('#loading').hide();
@@ -340,7 +342,7 @@
 				<a class="button button-block" id="submit" >Search</a>
 		 	</form>
 		 	<br>
-			<image id="img-result"/>
+			<image id="img-result" style="display:none;"/>
 			<br><br>
 			<div id="description-block" style="display:none;">
 				<ul class="list inset" id="detail">
