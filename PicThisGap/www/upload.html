@@ -8,6 +8,7 @@
     <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+     <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
     <title>Chowpedia</title>
  	<style>
  		#load-background{
@@ -65,114 +66,142 @@
 	<script src="js/ratchet.js"></script>
 	<script src="js/align.js"></script> <!-- for aligning elements on page-->
 	<script type="text/javascript">
-		var userInput;
-		var MenuIems;
-		var menuItems;
-		var file;
-		var photoValidate;
-		//store location in parse
-		var geocoder;
-		var point;
-		var curLat;
-		var curLong;
-		//document.addEventListener("deviceready", getLocation, false);
-		
-			$(document).ready(function(){
-			//getLocation();
-			alert("Chowpedia would like to use your current location");
-			var curLat = 42.0569705;
-			var curLong = -87.67672920000001;
-			point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
-			$('#fileselect').bind("change", function(e) {
-			    var files = e.target.files || e.dataTransfer.files;
-			    // Our file var now holds the selected file
-			    file = files[0];
-				photoValidate=1;
-			});
-			$('#uploadPhoto').click(function()
-			{
-				$('#fileselect').click();
-			});
+			var userInput;
+			var MenuIems;
+			var menuItems;
+			var file;
+			var photoValidate;
+			//store location in parse
+			var geocoder;
+			var point;
+			var curLat;
+			var curLong;
 			
-			$('#uploadbutton').click(function() {
-			if(!check())
-			{
-			//	alert("fail");
-				return;
-			}
-			
-		
-			//using align.js to centre the loader on screen.
-				$('#load-background').center();
-				$('#load-background').show();
-				$("#loading").center();
-				$('#loading').show();
+			// Wait for PhoneGap to load
+    		//	
+    		document.addEventListener("deviceready", onDeviceReady, false);
 
-			    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
-				var imageURLreturned;
-			    $.ajax({
-			       type: "POST",
-			       beforeSend: function(request)
-			       {
-				    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
-				    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
-				    request.setRequestHeader("Content-Type", file.type);
-				},
-				url: serverUrl,
-				data: file,
-				processData: false,
-				contentType: false,
-				success: function(data)
-				{	
-					//Change status on success
-					
-					imageURLreturned = data.url;
-					Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
-					window.MenuItems = Parse.Object.extend("MenuItems");
-					menuItems=new MenuItems();
-					
-					userInput=document.getElementById("description").value+"#description#"+
-							document.getElementById("ingredient").value+"#ingredient#"+
-							document.getElementById("category").value+"#category#"+
-							document.getElementById("country").value+"#country#";
+		    // PhoneGap is ready
+		    //
+		    function onDeviceReady() {
+		        // Empty
+		    }
+
+		    // alert dialog dismissed
+		    function alertDismissed() {
+		        // do something
+		    }
+
+		    // Show a custom alert
+		    //
+		    function showAlert() {
+		        navigator.notification.alert(
+		            'Chowpedia will use your location',  // message
+		            alertDismissed,         // callback
+		            'Chowpedia',            // title
+		            'OK'                  // buttonName
+		        );
+		    }
+
+			$(document).ready(function(){
+				//getLocation();
+				alert("Chowpedia is using your current location.");
+				var curLat = 42.0569705;
+				var curLong = -87.67672920000001;
+				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
+				$('#fileselect').bind("change", function(e) {
+				    var files = e.target.files || e.dataTransfer.files;
+				    // Our file var now holds the selected file
+				    file = files[0];
+					photoValidate=1;
+				});
+				$('#uploadPhoto').click(function()
+				{
+					$('#fileselect').click();
+				});
 				
-					var name=document.getElementById("name").value.toLowerCase();
-					name = ltrim(name);
-					name = rtrim(name);
+				$('#uploadbutton').click(function() {
+
+					if(!check())
+					{
+					//	alert("fail");
+						$('#loading').hide();
+						$('#load-background').hide();
+						return;
+					}
+								
+					//using align.js to centre the loader on screen.
+					$('#load-background').center();
+					$('#load-background').show();
+					$("#loading").center();
+					$('#loading').show();
+
+				    var serverUrl = 'https://api.parse.com/1/files/' + file.name;
+					var imageURLreturned;
+				    $.ajax({
+				       type: "POST",
+				       beforeSend: function(request)
+				       {
+					    request.setRequestHeader("X-Parse-Application-Id", 'disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc');
+					    request.setRequestHeader("X-Parse-REST-API-Key", 'LrjIhvEWgAPh2gsmByFKxfwQ8OhOKYdAnFkhJGzc');
+					    request.setRequestHeader("Content-Type", file.type);
+					},
+					url: serverUrl,
+					data: file,
+					processData: false,
+					contentType: false,
+					success: function(data)
+					{	
+						//Change status on success
+						
+						imageURLreturned = data.url;
+						Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
+						window.MenuItems = Parse.Object.extend("MenuItems");
+						menuItems=new MenuItems();
+						
+						userInput=document.getElementById("description").value+"#description#"+
+								document.getElementById("ingredient").value+"#ingredient#"+
+								document.getElementById("category").value+"#category#"+
+								document.getElementById("country").value+"#country#";
 					
-					menuItems.set("Description",userInput);
-					menuItems.set("Name",name);
-					menuItems.set("Likes",0);
-					menuItems.set("Dislikes",0);
-					menuItems.set("Image",imageURLreturned);
-					menuItems.set("Location",window.point);
-					menuItems.save(null,{
-						success: function(menuItems){
-							$('#loading').hide();
-							$('#load-background').hide();
-							alert("Tell me what you eat, I’ll tell you who you are. - Jean Anthelme Brillat-Savarin");
-						},
-						error: function(menuItems,error){
-							alert("Could not save data, try again.");
-						}
-					});
-				},
-				error: function(data) {
-				   $('#loading').hide();
-				   $('#load-background').hide();
-			       alert("Could not save photo, try again.");
-				   var obj = jQuery.parseJSON(data);
-				}
-			    });	//end of ajax			
-			 });//end of uploadbutton
+						var name=document.getElementById("name").value.toLowerCase();
+						name = ltrim(name);
+						name = rtrim(name);
+						
+						menuItems.set("Description",userInput);
+						menuItems.set("Name",name);
+						menuItems.set("Likes",0);
+						menuItems.set("Dislikes",0);
+						menuItems.set("Image",imageURLreturned);
+						menuItems.set("Location",window.point);
+						menuItems.save(null,{
+							success: function(menuItems){
+								$('#loading').hide();
+								$('#load-background').hide();
+								//uploadAlert();
+								alert("Tell me what you eat, I’ll tell you who you are. - Jean Anthelme Brillat-Savarin");
+							},
+							error: function(menuItems,error){
+								alert("Could not save data, try again.");
+							}
+						});
+					},
+					error: function(data) {
+					   $('#loading').hide();
+					   $('#load-background').hide();
+				       alert("Could not save photo, try again.");
+					   var obj = jQuery.parseJSON(data);
+					}
+				    });	//end of ajax			
+				 });//end of uploadbutton
 			});//end of ready		
 		function initializeParse()
 		{
+			document.getElementById("fileselect").style.display = "none";
 			photoValidate=0;
 		//	geocoder = new google.maps.Geocoder();
 			Parse.initialize("disyUernrft5qEpSxF0Kwye2tvVrtUNpGrq3Jesc", "qArEBKrhqQDdXICMjXvcOSYHdNyHdj0gYvsFPyZY");
 			window.MenuItems = Parse.Object.extend("MenuItems");
-			document.getElementById("fileselect").style.display = "none";
 		}
 
 		//Trimming string to remove spaces
@@ -187,7 +216,7 @@
 		}
 		function check()
 		{
-		/*	if(photoValidate!=1)
+			if(photoValidate!=1)
 			{
 				document.getElementById("uploadPhoto").innerHTML="uploading photo is required";
 				return false;
@@ -197,7 +226,7 @@
 			{
 				$("#name").attr('placeholder', 'Name is required');
 				return false;
-			}*/
+			}
 			return true;
 			
 		}
@@ -225,6 +254,8 @@
 	</script>
 </head>
 <body onload="initializeParse()">
+
+
 	<!-Title Bar->
 	<header class="bar-title">
 		<h1 class="title">Chowpedia</h1>
@@ -255,6 +286,7 @@
 	</nav>
 	<div id="home" class="content">
         <br><br>
+        <p><a href="#" onclick="showAlert();">Show Alert</a></p>
         <div class="content-frame">
         	<ul class="inset list"> 
                     <li id="instruction_box">
