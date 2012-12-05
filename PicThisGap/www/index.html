@@ -2,7 +2,7 @@
 <html> 
 <head> 
 	<meta charset="utf-8">
-	<title>Picture This</title>
+	<title>Chowpedia</title>
 
 	<!-- Sets initial viewport load and disables zooming  -->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -17,22 +17,34 @@
 		    z-index:    500;
 		    height: 100%;
 		    width: 100%;
-		    background: rgba(220,220,220,.8);
+		    background: rgba(0,0,0,.3);
 		}
  		#loading{
+ 			background: #FFF;
+ 			width: 80px;
+ 			height: 80px;
 		    display:    none;
 		    z-index:    501;
+		    border: 5px solid rgba(44,36,29,0.8);
+		    border-radius: 50%;
 		}
-		.content-frame {
-			padding: 0 25px;
+		.coffee {
+			margin: 9px 24px 0 24px;
 		}
-		#img-result {
-			width: 100%;
+		.coffeetext {
+			font: 600 13px/13px Helvetica;
+			text-align: center;
 		}
-		ul.list.inset {
-			margin: 0 0 25px 0;
-		}
-		#instruction_box {
+        .content-frame {
+            padding: 0 25px;
+        }
+        #img-result {
+            width: 100%;
+        }
+        ul.list.inset {
+            margin: 0 0 25px 0;
+        }
+        #instruction_box {
 			padding: 20px 20px 20px 20px;
 			width: inherit;
 			text-align: left;
@@ -42,6 +54,10 @@
 		}
 		.bold {
 			font-weight: bold;
+		}
+
+		#uploadbutton{
+			margin-bottom: 15px;
 		}
 	</style>
 
@@ -336,17 +352,12 @@
 		</div>
 	</div>
 
-    <div id="loading" >
-        <ul class="list inset" id="detail">
-            <li id="description" >
-                <img src="img/loading.gif" style="margin-left:50%;" />
-                <br><br>
-                <p id="status"> <b>Searching...</b></p>
-            </li>
-        </ul> 
-    </div>
-    <div id="load-background">
-    </div>
+    <div id="loading">
+		  		<img class="coffee" src="img/coffee.gif">
+		  		<div class="coffeetext">searching</div>
+	</div>
+	<div id="load-background">
+	</div>
 </body>
 
 </html>

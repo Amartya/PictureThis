@@ -3,6 +3,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        
+        <title>Chowpedia</title>
         <link rel="stylesheet" href="css/ratchet.css" />
         <script src="http://www.parsecdn.com/js/parse-1.1.5.min.js"></script>
         <script src="js/rachet.js"></script>
@@ -14,39 +16,55 @@
         
         <style>
             #load-background{
-                display:none;
-                z-index:500;
-                height:100%;
-                width:100%;
-                background: rgba(220,220,220,.8);
-            }
-            #loading{
-                display:    none;
-                z-index:    501;
-            }
-            .content-frame {
-                padding: 0 25px;
-            }
-            #img-result {
-                width: 100%;
-            }
-            ul.list.inset {
-                margin: 0 0 25px 0;
-            }
-            #instruction_box, #ocr_error {
-            padding: 20px 20px 20px 20px;
-            width: inherit;
-            text-align: left;
-            }
-            #description-block {
-                margin-bottom: 25px;
-            }
+		    display:    none;
+		    z-index:    500;
+		    height: 100%;
+		    width: 100%;
+		    background: rgba(0,0,0,.3);
+		}
+ 		#loading{
+ 			background: #FFF;
+ 			width: 80px;
+ 			height: 80px;
+		    display:    none;
+		    z-index:    501;
+		    border: 5px solid rgba(44,36,29,0.8);
+		    border-radius: 50%;
+		}
+		.coffee {
+			margin: 9px 24px 0 24px;
+		}
+		.coffeetext {
+			font: 600 13px/13px Helvetica;
+			text-align: center;
+		}
+        .content-frame {
+            padding: 0 25px;
+        }
+        #img-result {
+            width: 100%;
+        }
+        ul.list.inset {
+            margin: 0 0 25px 0;
+        }
+        #instruction_box {
+			padding: 20px 20px 20px 20px;
+			width: inherit;
+			text-align: left;
+		}
+		#description-block {
+			margin-bottom: 25px;
+		}
+		.bold {
+			font-weight: bold;
+		}
+
+		#uploadbutton{
+			margin-bottom: 15px;
+		}
             #ocr_error.bold {
                 font-weight: bold;
                 margin:none;
-            }
-            .bold {
-                font-weight: bold;
             }
         </style>
         <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
@@ -382,16 +400,11 @@
                 </div>
             </div>
         </div>
-        <div id="loading" >
-            <ul class="list inset" id="detail">
-                <li id="description" >
-                    <img src="img/loading.gif" style="margin-left:50%;" />
-                    <br><br>
-                    <p id="status"> <b>Hungry yet?</b></p>
-                </li>
-            </ul> 
-        </div>
-        <div id="load-background">
-        </div>
+        <div id="loading">
+		  		<img class="coffee" src="img/coffee.gif">
+		  		<div class="coffeetext">searching</div>
+	</div>
+	<div id="load-background">
+	</div>
     </body>
 </html>
