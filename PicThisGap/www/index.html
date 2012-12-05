@@ -39,7 +39,10 @@
             padding: 0 25px;
         }
         #img-result {
-            width: 100%;
+            width: 93%;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: #FFFFFF;
+            padding: 10px;
         }
         ul.list.inset {
             margin: 0 0 25px 0;
@@ -148,7 +151,7 @@
 									error:function(data){
 										$('#loading').hide();
 				   						$('#load-background').hide();
-										alert("cannot search");
+										alert("API call limit reached");
 									}
 								});
 							}
@@ -329,7 +332,7 @@
 		<div class="content-frame">
 			<ul class="inset list"> 
                 <li id="instruction_box">
-                    <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Type its name into the field below, click "Search," and PictureThis will return a photo and, if available, a brief description of the menu item.
+                    <span class="bold">Getting Started:</span> Want to find out more about a certain menu item? Type its name into the field below, click "Search," and Chowpedia will return a photo and, if available, a brief description of the menu item.
             	</li>
             </ul>
 			<form class="padded">
