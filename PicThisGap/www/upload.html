@@ -89,48 +89,7 @@
 
 		    // alert dialog dismissed
 		    function alertDismissed() {
-		        // do something
-		    }
-
-		    // Show a custom alert
-		    //
-		    function showAlert() {
-		        navigator.notification.alert(
-		            'Chowpedia will use your location',  // message
-		            alertDismissed,         // callback
-		            'Chowpedia',            // title
-		            'OK'                  // buttonName
-		        );
-		    }
-
-			$(document).ready(function(){
-				//getLocation();
-				alert("Chowpedia is using your current location.");
-				var curLat = 42.0569705;
-				var curLong = -87.67672920000001;
-				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
-				$('#fileselect').bind("change", function(e) {
-				    var files = e.target.files || e.dataTransfer.files;
-				    // Our file var now holds the selected file
-				    file = files[0];
-					photoValidate=1;
-				});
-				$('#uploadPhoto').click(function()
-				{
-					$('#fileselect').click();
-				});
-				
-				$('#uploadbutton').click(function() {
-
-					if(!check())
-					{
-					//	alert("fail");
-						$('#loading').hide();
-						$('#load-background').hide();
-						return;
-					}
-								
-					//using align.js to centre the loader on screen.
+		        //using align.js to centre the loader on screen.
 					$('#load-background').center();
 					$('#load-background').show();
 					$("#loading").center();
@@ -178,8 +137,7 @@
 							success: function(menuItems){
 								$('#loading').hide();
 								$('#load-background').hide();
-								//uploadAlert();
-								alert("Tell me what you eat, I’ll tell you who you are. - Jean Anthelme Brillat-Savarin");
+								showSuccess();
 							},
 							error: function(menuItems,error){
 								alert("Could not save data, try again.");
@@ -192,7 +150,61 @@
 				       alert("Could not save photo, try again.");
 					   var obj = jQuery.parseJSON(data);
 					}
-				    });	//end of ajax			
+				    });	//end of ajax
+		    }
+
+		    // Show a custom alert
+		    //
+		    function showAlert() {
+		        navigator.notification.alert(
+		            'Chowpedia will use your location',  // message
+		            alertDismissed,         // callback
+		            'Chowpedia',            // title
+		            'OK'                  // buttonName
+		        );
+		    }
+
+		    function showSuccess() {
+		        navigator.notification.alert(
+		            'Tell me what you eat, I’ll tell you who you are. - Jean Savarin',  // message
+		            alertSuccessDismissed,         // callback
+		            'Upload Successful!',            // title
+		            'OK'                  // buttonName
+		        );
+		    }
+
+		    function alertSuccessDismissed() {
+		    	console.log("Upload Success");
+		    }
+
+			$(document).ready(function(){
+				//getLocation();
+				//alert("Chowpedia is using your current location.");
+				var curLat = 42.0569705;
+				var curLong = -87.67672920000001;
+				point = new Parse.GeoPoint({latitude:curLat,longitude:curLong});
+				$('#fileselect').bind("change", function(e) {
+				    var files = e.target.files || e.dataTransfer.files;
+				    // Our file var now holds the selected file
+				    file = files[0];
+					photoValidate=1;
+				});
+				$('#uploadPhoto').click(function()
+				{
+					$('#fileselect').click();
+				});
+				
+				$('#uploadbutton').click(function() {
+
+					if(!check())
+					{
+					//	alert("fail");
+						$('#loading').hide();
+						$('#load-background').hide();
+						return;
+					}
+					showAlert();	
+								
 				 });//end of uploadbutton
 			});//end of ready		
 		function initializeParse()
@@ -286,7 +298,6 @@
 	</nav>
 	<div id="home" class="content">
         <br><br>
-        <p><a href="#" onclick="showAlert();">Show Alert</a></p>
         <div class="content-frame">
         	<ul class="inset list"> 
                     <li id="instruction_box">
