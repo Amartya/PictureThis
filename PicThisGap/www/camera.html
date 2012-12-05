@@ -49,6 +49,7 @@
 -moz-box-shadow: 0 0 5px #888;
 -webkit-box-shadow: 0 0 5px #888;
 box-shadow: 0 0 5px #888;
+margin-top: 10px;
         }
         ul.list.inset {
             margin: 0 0 25px 0;
@@ -73,9 +74,8 @@ box-shadow: 0 0 5px #888;
                 margin:none;
             }
             #name {
-	            font: 600 20px/20px Helvetica;
-	            margin-bottom: 10px;
-	            padding-bottom: 10px;
+	            font: 600 25px/25px Helvetica;
+	            text-align: center;
             }
             
 		.button-positive {
@@ -216,9 +216,9 @@ box-shadow: 0 0 5px #888;
                                 document.getElementById("counter").innerHTML = count;
                                 document.getElementById("counter2").innerHTML = count2;
                                 $("div#description-block").show();
-                                document.getElementById("img-result").style.display = 'block';
                                 $('#loading').hide();
                                 $('#load-background').hide();
+                                document.getElementById("img-result").style.display = 'block';
                             }
 
                             if(results.length==0){
